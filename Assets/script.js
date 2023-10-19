@@ -1,16 +1,27 @@
 let APIkey = "3ea7e44fe8cae8888a2fcecf8667f496";
 
-function fetchWeatherData() {
-    fetch('api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid=3ea7e44fe8cae8888a2fcecf8667f496')
+function fetchWeatherData(lat, lon) {
+    fetch(`api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${APIkey}`)
     .then(resp => resp.json())
     .then(json => console.log(json));
 }
 
-function fetchGeoCoordinates() {
-    fetch('http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid=3ea7e44fe8cae8888a2fcecf8667f496')
+function fetchGeoCoordinates(city_name, limit) {
+    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
     .then(resp => resp.json())
-    .then(json => console.log(json));
+    .then(json => function() {
+        return json[0].lat, json[0].lon;
+    }); //console.log('typeof json[0].lat: ' + typeof json[0].lat + ', typeof json[0].lon: ' + typeof json[0].lon));
+
+    //console.log('json[0]: ', json[0]);
 }
+
+let lat;
+let lon;
+lat, lon = fetchGeoCoordinates("Chicago", 5);
+console.log('lat: ' + lat + ', lon: ' + lon);
+//console.log('latitude: ', latAndLon);
+//console.log('longitude: ', latAndLon);
 
 /*
 function fetchCatImage() {
