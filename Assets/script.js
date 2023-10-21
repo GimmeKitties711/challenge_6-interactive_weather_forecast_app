@@ -3,7 +3,7 @@
 
 let APIkey = "3ea7e44fe8cae8888a2fcecf8667f496";
 
-function fetchCurrentWeatherData(city_name, lat, lon) {
+function fetchCurrentWeatherData(lat, lon) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIkey}`)
     .then(resp => {return resp.json()})
     .then(json => {
@@ -52,7 +52,7 @@ function fetchGeoCoordinates(city_name, limit) {
     .then(json => {
         console.log('city names: ', json)
     
-        fetchCurrentWeatherData(city_name, json[0].lat, json[0].lon)
+        fetchCurrentWeatherData(json[0].lat, json[0].lon)
         fetchFutureWeatherData(json[0].lat, json[0].lon)
         
         // return [json[0].lat, json[0].lon]
