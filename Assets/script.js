@@ -1,6 +1,3 @@
-//import dayjs from 'dayjs';
-//import * as dayjs from 'dayjs'
-
 let APIkey = "3ea7e44fe8cae8888a2fcecf8667f496";
 
 function fetchCurrentWeatherData(lat, lon) {
@@ -8,22 +5,16 @@ function fetchCurrentWeatherData(lat, lon) {
     .then(resp => {return resp.json()})
     .then(json => {
         console.log('current weather: ', json)
-        // console.log('current weather: ', json.main.temp, json.wind.speed, json.main.humidity)
-        // console.log('converted temperature: ', (json.main.temp-273.15)*9/5+32)
         populateCurrentWeather(json);
-    }
-    )
+    });
 }
 
 function fetchFutureWeatherData(lat, lon) {
-    //console.log('fetching weather data')
     fetch(`http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${APIkey}`)
     .then(resp => {
-        //console.log(resp)
         return resp.json()
     })
     .then(json => {
-        //console.log('future weather: ', json);
         populateFutureWeather(makeForecast(json.list))
     });
 }
@@ -34,11 +25,6 @@ function makeForecast(data) {
         newData.push(data[i]);
     }
     console.log("future weather: ", newData);
-    // console.log('typeof newData: ', typeof newData);
-    // for (let i = 0; i < newData.length; i++) {
-    //     console.log('newData[i]: ', newData[i]);
-    // }
-    //console.log("typeof newData: ", typeof newData);
     return newData;
 }
 
@@ -47,37 +33,16 @@ function fetchGeoCoordinates(city_name, limit) {
     console.log ("city name: ", city_name, ", limit: ", limit)
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
     .then(resp =>{
-        //console.log(resp)
         return resp.json()})
     .then(json => {
         console.log('city names: ', json)
     
         fetchCurrentWeatherData(json[0].lat, json[0].lon)
         fetchFutureWeatherData(json[0].lat, json[0].lon)
-        
-        // return [json[0].lat, json[0].lon]
-        
-    }
-        //console.log('json[0].lat: ', json[0].lat, ', json[0].lon: ', json[0].lon)
-        // return {
-        //     latitude: json[0].lat,
-        //     longitude: json[0].lon
-        // };
-    ); //console.log('typeof json[0].lat: ' + typeof json[0].lat + ', typeof json[0].lon: ' + typeof json[0].lon));
-
-    //console.log('json[0]: ', json[0]);
+    });
 }
 
 fetchGeoCoordinates("San Francisco", 10);
-//fetchWeatherData(fetchGeoCoordinates("Chicago", 5));
-//let [latitude, longitude] = fetchGeoCoordinates("Chicago", 5);
-//fetchGeoCoordinates("Chicago", 5);
-//console.log('latitude: ', latitude, ', longitude: ', longitude);
-//console.log(fetchGeoCoordinates("Chicago", 5));
-//let {lat, lon} = fetchGeoCoordinates("Chicago", 5);
-//console.log('lat: ', lat, ', lon: ', lon);
-//console.log('latitude: ', latAndLon);
-//console.log('longitude: ', latAndLon);
 
 let cityName = document.getElementById("city-name");
 let currentDate = document.getElementById("current-date");
@@ -145,20 +110,6 @@ function populateCurrentWeather(object) {
     currentHumidity.textContent = object.main.humidity;
 }
 
-// function selectWeatherIcon(description) {
-//     if (description === "scattered clouds") {
-//         return '🌥️';
-//     } else if (description === "clear sky") {
-//         return '☀️';
-//     } else if (description === "broken clouds") {
-//         return '🌤️';
-//     } else if (description === "overcast clouds") {
-//         return '🌫️';
-//     } else if (description === "few clouds") {
-//         return '☁️';
-//     }
-// }
-
 function convertTemperature(kelvin) {
     return (kelvin - 273.15) * 9/5 + 32;
 }
@@ -166,13 +117,6 @@ function convertTemperature(kelvin) {
 function populateFutureWeather(object) {
     let weatherIcon;
     let weatherIconURL;
-    // const weatherIcon = object[0].weather[0].icon;
-    // console.log('weatherIcon: ', weatherIcon);
-    // console.log('typeof weatherIcon: ', typeof weatherIcon)
-    
-    // const weatherIconURL = `http://openweathermap.org/img/w/${weatherIcon}.png`;
-    // console.log('weatherIconURL: ', weatherIconURL);
-    // console.log('typeof weatherIconURL: ', typeof weatherIconURL);
 
     for (let i = 0; i < object.length; i++) {
         futureDates[i].textContent = dayjs().add(i+1, 'day').format('M/DD/YYYY');
@@ -184,16 +128,6 @@ function populateFutureWeather(object) {
         futureWinds[i].textContent = object[i].wind.speed.toFixed(2);
         futureHumidities[i].textContent = object[i].main.humidity;
     }
-
-    // dateOneDayOut.textContent = dayjs().add(1, 'day').format('M/DD/YYYY');
-    // // dateTwoDaysOut.textContent = dayjs().add(2, 'day').format('M/DD/YYYY');
-    // // dateThreeDaysOut.textContent = dayjs().add(3, 'day').format('M/DD/YYYY');
-    // // dateFourDaysOut.textContent = dayjs().add(4, 'day').format('M/DD/YYYY');
-    // // dateFiveDaysOut.textContent = dayjs().add(5, 'day').format('M/DD/YYYY');
-    // weatherIconOneDayOut.textContent = selectWeatherIcon(object[0].weather[0].description);
-    // temperatureOneDayOut.textContent = convertTemperature(object[0].main.temp).toFixed(2);
-    // windOneDayOut.textContent = object[0].wind.speed;
-    // humidityOneDayOut.textContent = object[0].main.humidity;
 }
 
 function getStoredCities() {
