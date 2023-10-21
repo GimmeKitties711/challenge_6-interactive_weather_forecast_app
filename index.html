@@ -8,11 +8,19 @@
 </head>
 <body>
     <h1>Weather Dashboard</h1>
-    <h3>Search for a city:</h3>
-    <input type="text" id="city-input" placeholder="City Name">
-    <button id="search-btn">Search</button>
-    <section id="search-history-container"></section>
-    <section id="current-weather-container"></section>
+    <section id="search-container">
+        <h3>Search for a city:</h3>
+        <form name="submitCity" id="submit-city" method="post">
+            <input type="text" id="city-input" placeholder="City Name">
+            <button id="search-btn">Search</button>
+        </form>
+        <section id="search-history-container"></section>
+    </section>
+    <section id="choice-container">
+        <button id="home-page-btn" title="Home Page">Go Back</button>
+        <p>Which city would you like to save?</p>
+        <div id="city-options-container"></div>
+    </section>
     <section id="forecast-container">
         <div id="current-weather">
             <div>

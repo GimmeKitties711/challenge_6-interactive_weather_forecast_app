@@ -8,6 +8,27 @@ body {
     /*background-color: #f0f0f0;*/
 }
 
+#search-container {
+    width: 20%;
+    float: left;
+}
+
+#choice-container {
+    display: none;
+}
+
+#forecast-container {
+    width: 80%;
+    float: right;
+}
+
+/*
+#search-container, #forecast-container {
+    display: inline-block;
+    vertical-align: top;
+}
+*/
+
 #current-weather {
     margin-top: 20px;
     padding: 10px;

@@ -130,6 +130,25 @@ function populateFutureWeather(object) {
     }
 }
 
+let searchBtn = document.getElementById("search-btn");
+let homePageBtn = document.getElementById("home-page-btn");
+let choiceContainer = document.getElementById("choice-container");
+let forecastContainer = document.getElementById("forecast-container");
+
+function showChoiceContainer() {
+    choiceContainer.style.display = "block";
+    forecastContainer.style.display = "none";
+}
+
+searchBtn.addEventListener("click", showChoiceContainer);
+
+function showForecastContainer() {
+    choiceContainer.style.display = "none";
+    forecastContainer.style.display = "block";
+}
+
+homePageBtn.addEventListener("click", showForecastContainer);
+
 function getStoredCities() {
     let storedCities = JSON.parse(localStorage.getItem("cities"));
     if (storedCities === null) {
