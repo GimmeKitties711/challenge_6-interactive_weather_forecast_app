@@ -7,10 +7,10 @@ function fetchCurrentWeatherData(city_name, lat, lon) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIkey}`)
     .then(resp => {return resp.json()})
     .then(json => {
-        console.log('json: ', json)
+        console.log('current weather: ', json)
         // console.log('current weather: ', json.main.temp, json.wind.speed, json.main.humidity)
         // console.log('converted temperature: ', (json.main.temp-273.15)*9/5+32)
-        populateCurrentWeather(city_name, json);
+        populateCurrentWeather(json);
     }
     )
 }
@@ -22,17 +22,24 @@ function fetchFutureWeatherData(lat, lon) {
         //console.log(resp)
         return resp.json()
     })
-    .then(json => makeForecast(json.list));
+    .then(json => {
+        //console.log('future weather: ', json);
+        populateFutureWeather(makeForecast(json.list))
+    });
 }
 
 function makeForecast(data) {
     let newData = new Array(0);
-    for (let i = 0; i < data.length; i+=8) {
+    for (let i=0; i<data.length; i+=8) {
         newData.push(data[i]);
     }
-    console.log("newData: ", newData);
+    console.log("future weather: ", newData);
+    // console.log('typeof newData: ', typeof newData);
+    // for (let i = 0; i < newData.length; i++) {
+    //     console.log('newData[i]: ', newData[i]);
+    // }
     //console.log("typeof newData: ", typeof newData);
-    //return newData;
+    return newData;
 }
 
 function fetchGeoCoordinates(city_name, limit) {
@@ -43,7 +50,7 @@ function fetchGeoCoordinates(city_name, limit) {
         //console.log(resp)
         return resp.json()})
     .then(json => {
-        console.log(json)
+        console.log('city names: ', json)
     
         fetchCurrentWeatherData(city_name, json[0].lat, json[0].lon)
         fetchFutureWeatherData(json[0].lat, json[0].lon)
@@ -61,7 +68,7 @@ function fetchGeoCoordinates(city_name, limit) {
     //console.log('json[0]: ', json[0]);
 }
 
-fetchGeoCoordinates("Chicken", 10);
+fetchGeoCoordinates("Kansas City", 10);
 //fetchWeatherData(fetchGeoCoordinates("Chicago", 5));
 //let [latitude, longitude] = fetchGeoCoordinates("Chicago", 5);
 //fetchGeoCoordinates("Chicago", 5);
@@ -109,21 +116,35 @@ let temperatureFiveDaysOut = document.getElementById("temperature-five-days-out"
 let windFiveDaysOut = document.getElementById("wind-five-days-out");
 let humidityFiveDaysOut = document.getElementById("humidity-five-days-out");
 
-function populateCurrentWeather(city_name, object) {
-    cityName.textContent = city_name;
+let futureDates = [dateOneDayOut, dateTwoDaysOut, dateThreeDaysOut, dateFourDaysOut, dateFiveDaysOut];
+let futureWeatherIcons = [weatherIconOneDayOut, weatherIconTwoDaysOut, weatherIconThreeDaysOut, weatherIconFourDaysOut, weatherIconFiveDaysOut];
+let futureTemperatures = [temperatureOneDayOut, temperatureTwoDaysOut, temperatureThreeDaysOut, temperatureFourDaysOut, temperatureFiveDaysOut];
+let futureWinds = [windOneDayOut, windTwoDaysOut, windThreeDaysOut, windFourDaysOut, windFiveDaysOut];
+let futureHumidities = [humidityOneDayOut, humidityTwoDaysOut, humidityThreeDaysOut, humidityFourDaysOut, humidityFiveDaysOut];
+
+function populateCurrentWeather(object) {
+    cityName.textContent = object.name;
     currentDate.textContent = dayjs().format('M/DD/YYYY');
     // source for how to get current date in dayjs(): https://day.js.org/docs/en/parse/now
     // source for how to format date in dayjs(): https://day.js.org/docs/en/display/format
     currentWeatherIcon.textContent = selectWeatherIcon(object.weather[0].description);
     currentTemperature.textContent = convertTemperature(object.main.temp).toFixed(2); // toFixed(2) rounds to two decimal places
     // source for how to round a number to two decimal places: https://stackoverflow.com/questions/11832914/how-to-round-to-at-most-2-decimal-places-if-necessary
-    currentWind.textContent = object.wind.speed;
+    currentWind.textContent = object.wind.speed.toFixed(2);
     currentHumidity.textContent = object.main.humidity;
 }
 
 function selectWeatherIcon(description) {
     if (description === "scattered clouds") {
         return '🌥️';
+    } else if (description === "clear sky") {
+        return '☀️';
+    } else if (description === "broken clouds") {
+        return '🌤️';
+    } else if (description === "overcast clouds") {
+        return '🌫️';
+    } else if (description === "few clouds") {
+        return '☁️';
     }
 }
 
@@ -131,39 +152,25 @@ function convertTemperature(kelvin) {
     return (kelvin - 273.15) * 9/5 + 32;
 }
 
-/*
-function fetchCatImage() {
-    let image = document.getElementById("cat-image");
-    fetch('https://api.thecatapi.com/v1/images/search')
-        // this api does not require a key, source: https://developers.thecatapi.com/view-account/ylX4blBYT9FaoVd6OhvR?report=bOoHBz-8t
-        .then(resp => resp.json())
-        .then(json => image.src = json[0].url);
-    // in this case, json is a one-entry array with four objects: {id: url: width: height: }. the url object is the image url, so this line creates a src field for the img with the id "cat-image" and sets it to the image url.
-}
-
-const fact_url = 'https://meowfacts.p.rapidapi.com/?lang=eng';
-const fact_options = {
-    method: 'GET',
-    headers: {
-        'X-RapidAPI-Key': '41afa2b638msh3f22d0547e8ca2ap195e88jsn66cc9c003763',
-        // this API key was created by TA Michael Seaman. without a valid API key, clicking on the random cat and fact button produces an error message in the console: "401: You are not subscribed to this API".
-        'X-RapidAPI-Host': 'meowfacts.p.rapidapi.com',
+function populateFutureWeather(object) {
+    for (let i = 0; i < object.length; i++) {
+        futureDates[i].textContent = dayjs().add(i+1, 'day').format('M/DD/YYYY');
+        futureWeatherIcons[i].textContent = selectWeatherIcon(object[i].weather[0].description);
+        futureTemperatures[i].textContent = convertTemperature(object[i].main.temp).toFixed(2);
+        futureWinds[i].textContent = object[i].wind.speed.toFixed(2);
+        futureHumidities[i].textContent = object[i].main.humidity;
     }
-}
 
-function fetchCatFact() {
-    let fact = document.getElementById("cat-fact");
-    fetch(fact_url, fact_options)
-        .then(resp => resp.json())
-        .then(json => fact.textContent = json.data); // sets the text content of the element with the id "cat-fact" to the data retrieved by fetching. the fact element is empty until the random cat and fact button is clicked.
+    dateOneDayOut.textContent = dayjs().add(1, 'day').format('M/DD/YYYY');
+    // dateTwoDaysOut.textContent = dayjs().add(2, 'day').format('M/DD/YYYY');
+    // dateThreeDaysOut.textContent = dayjs().add(3, 'day').format('M/DD/YYYY');
+    // dateFourDaysOut.textContent = dayjs().add(4, 'day').format('M/DD/YYYY');
+    // dateFiveDaysOut.textContent = dayjs().add(5, 'day').format('M/DD/YYYY');
+    weatherIconOneDayOut.textContent = selectWeatherIcon(object[0].weather[0].description);
+    temperatureOneDayOut.textContent = convertTemperature(object[0].main.temp).toFixed(2);
+    windOneDayOut.textContent = object[0].wind.speed;
+    humidityOneDayOut.textContent = object[0].main.humidity;
 }
-*/
-
-// function getValue(name, age) {
-//     console.log(name, age)
-// }
-// var username = getValue(["John", 25], true);
-// console.log(username)
 
 function getStoredCities() {
     let storedCities = JSON.parse(localStorage.getItem("cities"));
