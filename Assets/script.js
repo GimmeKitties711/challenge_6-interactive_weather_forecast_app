@@ -1,10 +1,25 @@
+//import dayjs from 'dayjs';
+//import * as dayjs from 'dayjs'
+
 let APIkey = "3ea7e44fe8cae8888a2fcecf8667f496";
 
-function fetchWeatherData(lat, lon) {
-    console.log('fetching weather data')
+function fetchCurrentWeatherData(city_name, lat, lon) {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIkey}`)
+    .then(resp => {return resp.json()})
+    .then(json => {
+        console.log('json: ', json)
+        // console.log('current weather: ', json.main.temp, json.wind.speed, json.main.humidity)
+        // console.log('converted temperature: ', (json.main.temp-273.15)*9/5+32)
+        populateCurrentWeather(city_name, json);
+    }
+    )
+}
+
+function fetchFutureWeatherData(lat, lon) {
+    //console.log('fetching weather data')
     fetch(`http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${APIkey}`)
     .then(resp => {
-        console.log(resp)
+        //console.log(resp)
         return resp.json()
     })
     .then(json => makeForecast(json.list));
@@ -16,6 +31,8 @@ function makeForecast(data) {
         newData.push(data[i]);
     }
     console.log("newData: ", newData);
+    //console.log("typeof newData: ", typeof newData);
+    //return newData;
 }
 
 function fetchGeoCoordinates(city_name, limit) {
@@ -23,12 +40,13 @@ function fetchGeoCoordinates(city_name, limit) {
     console.log ("city name: ", city_name, ", limit: ", limit)
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
     .then(resp =>{
-        console.log(resp)
+        //console.log(resp)
         return resp.json()})
     .then(json => {
         console.log(json)
     
-        fetchWeatherData(json[0].lat, json[0].lon)
+        fetchCurrentWeatherData(city_name, json[0].lat, json[0].lon)
+        fetchFutureWeatherData(json[0].lat, json[0].lon)
         
         // return [json[0].lat, json[0].lon]
         
@@ -43,7 +61,7 @@ function fetchGeoCoordinates(city_name, limit) {
     //console.log('json[0]: ', json[0]);
 }
 
-//fetchGeoCoordinates("Chicago", 5);
+fetchGeoCoordinates("Chicken", 10);
 //fetchWeatherData(fetchGeoCoordinates("Chicago", 5));
 //let [latitude, longitude] = fetchGeoCoordinates("Chicago", 5);
 //fetchGeoCoordinates("Chicago", 5);
@@ -53,6 +71,65 @@ function fetchGeoCoordinates(city_name, limit) {
 //console.log('lat: ', lat, ', lon: ', lon);
 //console.log('latitude: ', latAndLon);
 //console.log('longitude: ', latAndLon);
+
+let cityName = document.getElementById("city-name");
+let currentDate = document.getElementById("current-date");
+let currentWeatherIcon = document.getElementById("current-weather-icon");
+let currentTemperature = document.getElementById("current-temperature");
+let currentWind = document.getElementById("current-wind");
+let currentHumidity = document.getElementById("current-humidity");
+
+let dateOneDayOut = document.getElementById("date-one-day-out");
+let weatherIconOneDayOut = document.getElementById("weather-icon-one-day-out");
+let temperatureOneDayOut = document.getElementById("temperature-one-day-out");
+let windOneDayOut = document.getElementById("wind-one-day-out");
+let humidityOneDayOut = document.getElementById("humidity-one-day-out");
+
+let dateTwoDaysOut = document.getElementById("date-two-days-out");
+let weatherIconTwoDaysOut = document.getElementById("weather-icon-two-days-out");
+let temperatureTwoDaysOut = document.getElementById("temperature-two-days-out");
+let windTwoDaysOut = document.getElementById("wind-two-days-out");
+let humidityTwoDaysOut = document.getElementById("humidity-two-days-out");
+
+let dateThreeDaysOut = document.getElementById("date-three-days-out");
+let weatherIconThreeDaysOut = document.getElementById("weather-icon-three-days-out");
+let temperatureThreeDaysOut = document.getElementById("temperature-three-days-out");
+let windThreeDaysOut = document.getElementById("wind-three-days-out");
+let humidityThreeDaysOut = document.getElementById("humidity-three-days-out");
+
+let dateFourDaysOut = document.getElementById("date-four-days-out");
+let weatherIconFourDaysOut = document.getElementById("weather-icon-four-days-out");
+let temperatureFourDaysOut = document.getElementById("temperature-four-days-out");
+let windFourDaysOut = document.getElementById("wind-four-days-out");
+let humidityFourDaysOut = document.getElementById("humidity-four-days-out");
+
+let dateFiveDaysOut = document.getElementById("date-five-days-out");
+let weatherIconFiveDaysOut = document.getElementById("weather-icon-five-days-out");
+let temperatureFiveDaysOut = document.getElementById("temperature-five-days-out");
+let windFiveDaysOut = document.getElementById("wind-five-days-out");
+let humidityFiveDaysOut = document.getElementById("humidity-five-days-out");
+
+function populateCurrentWeather(city_name, object) {
+    cityName.textContent = city_name;
+    currentDate.textContent = dayjs().format('M/DD/YYYY');
+    // source for how to get current date in dayjs(): https://day.js.org/docs/en/parse/now
+    // source for how to format date in dayjs(): https://day.js.org/docs/en/display/format
+    currentWeatherIcon.textContent = selectWeatherIcon(object.weather[0].description);
+    currentTemperature.textContent = convertTemperature(object.main.temp).toFixed(2); // toFixed(2) rounds to two decimal places
+    // source for how to round a number to two decimal places: https://stackoverflow.com/questions/11832914/how-to-round-to-at-most-2-decimal-places-if-necessary
+    currentWind.textContent = object.wind.speed;
+    currentHumidity.textContent = object.main.humidity;
+}
+
+function selectWeatherIcon(description) {
+    if (description === "scattered clouds") {
+        return '🌥️';
+    }
+}
+
+function convertTemperature(kelvin) {
+    return (kelvin - 273.15) * 9/5 + 32;
+}
 
 /*
 function fetchCatImage() {

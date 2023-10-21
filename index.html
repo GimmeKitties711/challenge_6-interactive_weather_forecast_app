@@ -16,12 +16,58 @@
     <div>5-day forecast:</div>
     <section id="forecast-container">
         <div class="forecast-card">
-            <div class="forecast-one-day-out"></div>
-            <div class="forecast-two-days-out"></div>
-            <div class="forecast-three-days-out"></div>
-            <div class="forecast-four-days-out"></div>
+            <div id="current-weather">
+                0
+                <div id="city-name">thingy</div>
+                <div>(<span id="current-date"></span>)</div>
+                <div id="current-weather-icon"></div>
+                <div>Temp: <span id="current-temperature"></span> °F</div>
+                <div>Wind: <span id="current-wind"></span> MPH</div>
+                <div>Humidity: <span id="current-humidity"></span>%</div>
+            </div>
+            <div id="forecast-one-day-out">
+                1
+                <div id="date-one-day-out"></div>
+                <div id="weather-icon-one-day-out"></div>
+                <div>Temp: <span id="temperature-one-day-out"></span> °F</div>
+                <div>Wind: <span id="wind-one-day-out"></span> MPH</div>
+                <div>Humidity: <span id="humidity-one-day-out"></span>%</div>
+            </div>
+            <div id="forecast-two-days-out">
+                2
+                <div id="date-two-days-out"></div>
+                <div id="weather-icon-two-days-out"></div>
+                <div>Temp: <span id="temperature-two-days-out"></span> °F</div>
+                <div>Wind: <span id="wind-two-days-out"></span> MPH</div>
+                <div>Humidity: <span id="humidity-two-days-out"></span>%</div>
+            </div>
+            <div id="forecast-three-days-out">
+                3
+                <div id="date-three-days-out"></div>
+                <div id="weather-icon-three-days-out"></div>
+                <div>Temp: <span id="temperature-three-days-out"></span> °F</div>
+                <div>Wind: <span id="wind-three-days-out"></span> MPH</div>
+                <div>Humidity: <span id="humidity-three-days-out"></span>%</div>
+            </div>
+            <div id="forecast-four-days-out">
+                4
+                <div id="date-four-days-out"></div>
+                <div id="weather-icon-four-days-out"></div>
+                <div>Temp: <span id="temperature-four-days-out"></span> °F</div>
+                <div>Wind: <span id="wind-four-days-out"></span> MPH</div>
+                <div>Humidity: <span id="humidity-four-days-out"></span>%</div>
+            </div>
+            <div id="forecast-five-days-out">
+                5
+                <div id="date-five-days-out"></div>
+                <div id="weather-icon-five-days-out"></div>
+                <div>Temp: <span id="temperature-five-days-out"></span> °F</div>
+                <div>Wind: <span id="wind-five-days-out"></span> MPH</div>
+                <div>Humidity: <span id="humidity-five-days-out"></span>%</div>
+            </div>
         </div>
     </section>
     <script src="Assets/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script> <!-- import dayjs -->
 </body>
 </html>
