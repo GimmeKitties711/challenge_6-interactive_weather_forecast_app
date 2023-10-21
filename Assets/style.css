@@ -1,0 +1,47 @@
+:root {
+    --forecast-entry-margin: 10px;
+}
+
+#current-weather {
+    margin-top: 20px;
+    padding-left: 10px;
+    border: 1px solid black;
+}
+
+#city-name, #current-date-container {
+    display: inline-block;
+}
+
+#forecast-next-five-days {
+    margin-top: 20px;
+}
+
+#forecast-title {
+    margin-bottom: 10px;
+}
+
+#forecast-one-day-out {
+    margin-right: 10px;
+}
+
+#forecast-two-days-out, #forecast-three-days-out, #forecast-four-days-out {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#forecast-five-days-out {
+    margin-left: 10px;
+}
+
+.forecast-entry {
+    display: inline-block;
+    /*margin: 10px;*/
+
+    color: ghostwhite;
+    background-color: deepskyblue;
+    
+    /*width: 15%;*/
+    width: calc((100% - (var(--forecast-entry-margin) * 14.6))/5);
+    /*width: 20%;*/
+    padding-left: 10px;
+}

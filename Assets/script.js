@@ -127,35 +127,50 @@ function populateCurrentWeather(object) {
     currentDate.textContent = dayjs().format('M/DD/YYYY');
     // source for how to get current date in dayjs(): https://day.js.org/docs/en/parse/now
     // source for how to format date in dayjs(): https://day.js.org/docs/en/display/format
-    currentWeatherIcon.textContent = selectWeatherIcon(object.weather[0].description);
+    let weatherIcon = object.weather[0].icon;
+    let weatherIconURL = `http://openweathermap.org/img/w/${weatherIcon}.png`;
+    currentWeatherIcon.setAttribute('src', weatherIconURL);
+    //currentWeatherIcon.textContent = selectWeatherIcon(object.weather[0].description);
     currentTemperature.textContent = convertTemperature(object.main.temp).toFixed(2); // toFixed(2) rounds to two decimal places
     // source for how to round a number to two decimal places: https://stackoverflow.com/questions/11832914/how-to-round-to-at-most-2-decimal-places-if-necessary
     currentWind.textContent = object.wind.speed.toFixed(2);
     currentHumidity.textContent = object.main.humidity;
 }
 
-function selectWeatherIcon(description) {
-    if (description === "scattered clouds") {
-        return '🌥️';
-    } else if (description === "clear sky") {
-        return '☀️';
-    } else if (description === "broken clouds") {
-        return '🌤️';
-    } else if (description === "overcast clouds") {
-        return '🌫️';
-    } else if (description === "few clouds") {
-        return '☁️';
-    }
-}
+// function selectWeatherIcon(description) {
+//     if (description === "scattered clouds") {
+//         return '🌥️';
+//     } else if (description === "clear sky") {
+//         return '☀️';
+//     } else if (description === "broken clouds") {
+//         return '🌤️';
+//     } else if (description === "overcast clouds") {
+//         return '🌫️';
+//     } else if (description === "few clouds") {
+//         return '☁️';
+//     }
+// }
 
 function convertTemperature(kelvin) {
     return (kelvin - 273.15) * 9/5 + 32;
 }
 
 function populateFutureWeather(object) {
+    let weatherIcon;
+    let weatherIconURL;
+    // const weatherIcon = object[0].weather[0].icon;
+    // console.log('weatherIcon: ', weatherIcon);
+    // console.log('typeof weatherIcon: ', typeof weatherIcon)
+    
+    // const weatherIconURL = `http://openweathermap.org/img/w/${weatherIcon}.png`;
+    // console.log('weatherIconURL: ', weatherIconURL);
+    // console.log('typeof weatherIconURL: ', typeof weatherIconURL);
+
     for (let i = 0; i < object.length; i++) {
         futureDates[i].textContent = dayjs().add(i+1, 'day').format('M/DD/YYYY');
-        futureWeatherIcons[i].textContent = selectWeatherIcon(object[i].weather[0].description);
+        weatherIcon = object[i].weather[0].icon;
+        weatherIconURL = `http://openweathermap.org/img/w/${weatherIcon}.png`;
+        futureWeatherIcons[i].setAttribute('src', weatherIconURL);
         futureTemperatures[i].textContent = convertTemperature(object[i].main.temp).toFixed(2);
         futureWinds[i].textContent = object[i].wind.speed.toFixed(2);
         futureHumidities[i].textContent = object[i].main.humidity;
