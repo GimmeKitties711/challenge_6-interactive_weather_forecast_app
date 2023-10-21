@@ -11,8 +11,8 @@
     <section id="search-container">
         <h3>Search for a city:</h3>
         <form name="submitCity" id="submit-city" method="post">
-            <input type="text" id="city-input" placeholder="City Name">
-            <button id="search-btn">Search</button>
+            <input type="text" name="cityName" id="city-input" placeholder="City Name">
+            <input type="submit" id="search-btn" value="Search">
         </form>
         <section id="search-history-container"></section>
     </section>
@@ -24,7 +24,7 @@
     <section id="forecast-container">
         <div id="current-weather">
             <div>
-                <div id="city-name"></div>
+                <div id="city-state-country"></div>
                 <div id="current-date-container">(<span id="current-date"></span>)</div>
             </div>
             <div id="current-weather-description"></div>

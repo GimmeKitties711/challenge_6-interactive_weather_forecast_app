@@ -1,6 +1,6 @@
 let APIkey = "3ea7e44fe8cae8888a2fcecf8667f496";
 
-function fetchCurrentWeatherData(lat, lon) {
+function fetchCurrentWeatherData(city_name, lat, lon) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIkey}`)
     .then(resp => {return resp.json()})
     .then(json => {
@@ -27,7 +27,7 @@ function makeForecast(data) {
     console.log("future weather: ", newData);
     return newData;
 }
-
+/*
 function fetchGeoCoordinates(city_name, limit) {
     console.log('fetching geo coordinates')
     console.log ("city name: ", city_name, ", limit: ", limit)
@@ -37,14 +37,32 @@ function fetchGeoCoordinates(city_name, limit) {
     .then(json => {
         console.log('city names: ', json)
     
-        fetchCurrentWeatherData(json[0].lat, json[0].lon)
+        fetchCurrentWeatherData(city_name, json[0].lat, json[0].lon)
         fetchFutureWeatherData(json[0].lat, json[0].lon)
     });
 }
+*/
+function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
+    //let cityNames;
 
-fetchGeoCoordinates("San Francisco", 10);
+    console.log('fetching geo coordinates')
+    console.log ("city name: ", city_name, ", limit: ", limit)
+    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
+    .then(resp => resp.json()
+    .then(json => ({
+        data: json,
+    }))
+    .then(res => {
+        appendSearchOptions(cityOptionsContainer, res.data);
+    }))
 
-let cityName = document.getElementById("city-name");
+    //console.log('amgery: ', cityNames)
+    //return cityNames;
+}
+
+//fetchGeoCoordinates("San Francisco", 10);
+
+let cityStateCountry = document.getElementById("city-state-country");
 let currentDate = document.getElementById("current-date");
 let currentWeatherDescription = document.getElementById("current-weather-description");
 let currentWeatherIcon = document.getElementById("current-weather-icon");
@@ -95,7 +113,6 @@ let futureWinds = [windOneDayOut, windTwoDaysOut, windThreeDaysOut, windFourDays
 let futureHumidities = [humidityOneDayOut, humidityTwoDaysOut, humidityThreeDaysOut, humidityFourDaysOut, humidityFiveDaysOut];
 
 function populateCurrentWeather(object) {
-    cityName.textContent = object.name;
     currentDate.textContent = dayjs().format('M/DD/YYYY');
     // source for how to get current date in dayjs(): https://day.js.org/docs/en/parse/now
     // source for how to format date in dayjs(): https://day.js.org/docs/en/display/format
@@ -132,15 +149,139 @@ function populateFutureWeather(object) {
 
 let searchBtn = document.getElementById("search-btn");
 let homePageBtn = document.getElementById("home-page-btn");
+let cityInput = document.getElementById("city-input");
 let choiceContainer = document.getElementById("choice-container");
+let cityOptionsContainer = document.getElementById("city-options-container");
 let forecastContainer = document.getElementById("forecast-container");
+/*
+function validateForm() {
+    var initialsForm = document.forms["submitInitials"]["initials"].value;
+    var initialsRegex = /^[A-Z]{2}$/; // two capital letters
+    var match = initialsForm.match(initialsRegex);
+    if (!match) { // if the user enters anything except two capital letters
+      alert("Please enter valid initials, e.g. 'AB'");
+      return false;
+    }
+    return true;
+}
+*/
+
+function validateForm() {
+    let cityForm = document.forms["submitCity"]["cityName"].value;
+    let cityRegex = /^[A-Za-z\s]+$/; // only letters and spaces
+    let match = cityForm.match(cityRegex);
+    if (!match) { // if the user enters anything except letters and spaces
+      alert("Please enter a valid city name, e.g. 'San Francisco'");
+      return false;
+    }
+    return true;
+}
+
+let submitCityForm = document.getElementById("submit-city");
+
+submitCityForm.addEventListener("submit", function(event) {
+    event.preventDefault(); // prevent the form from automatically submitting and reloading the page
+});
 
 function showChoiceContainer() {
     choiceContainer.style.display = "block";
     forecastContainer.style.display = "none";
 }
 
-searchBtn.addEventListener("click", showChoiceContainer);
+searchBtn.addEventListener("click", function() {
+    if (validateForm()) {
+        showChoiceContainer();
+        // let city = document.getElementById("city-input").value;
+        // console.log('city: ', city);
+        // fetchGeoCoordinates(city, 10);
+        //console.log('city input: ', cityInput.value);
+        //console.log('why tho: ', fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10));
+        //appendSearchOptions(cityOptionsContainer, fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10));
+        fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10);
+    }
+});
+
+function appendSearchOptions(elem, object) {
+    if (elem.hasChildNodes()) { // if there are already search options on the page
+    // source for the hasChildNodes() function: https://developer.mozilla.org/en-US/docs/Web/API/Node/hasChildNodes
+        elem.innerHTML = ''; // remove the search options from the page
+    }
+    if (object.length === 0) {
+        let noResults = document.createElement('h2');
+        noResults.innerText = 'No results found. Please enter a different city and try again.';
+        elem.appendChild(noResults);
+    }
+    for (i=0; i<object.length; i++) {
+        let searchOption = document.createElement('button');
+        let searchOptionString = 'City: ' + object[i].name + '\nState: ' + object[i].state + '\nCountry: ' + object[i].country + '\nLatitude: ' + object[i].lat + '\nLongitude: ' + object[i].lon;
+        searchOption.innerText = searchOptionString;
+        console.log(object[i].lat, object[i].lon)
+        let chosenCity = object[i].name;
+        let chosenState = object[i].state;
+        let chosenCountry = object[i].country;
+        let chosenLat = object[i].lat;
+        let chosenLon = object[i].lon;
+        searchOption.addEventListener("click", function() {
+            console.log('clicked')
+            console.log('chosen city: ', chosenCity, ', chosen state: ', chosenState, ', chosen country: ', chosenCountry, ', chosen lat: ', chosenLat, ', chosen lon: ', chosenLon)
+            //console.log(object[i])
+            showForecastContainer();
+            //console.log('the thingy is: ', object)
+            let locationString = chosenCity + ', ' + chosenState + ', ' + chosenCountry;
+            locationString = locationString.replaceAll('undefined', 'N/A');
+            cityStateCountry.textContent = locationString;
+            fetchCurrentWeatherData(chosenCity, chosenLat, chosenLon);
+            fetchFutureWeatherData(chosenLat, chosenLon);
+            // showForecastContainer();
+            //saveNewCity(object[i].name);
+        });
+        elem.appendChild(searchOption);
+    }
+}
+/*
+function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
+    //let cityNames;
+
+    console.log('fetching geo coordinates')
+    console.log ("city name: ", city_name, ", limit: ", limit)
+    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
+    .then(resp => resp.json()
+    .then(json => ({
+        data: json,
+    }))
+    .then(res => {
+        appendSearchOptions(cityOptionsContainer, res.data);
+    }))
+
+    //console.log('amgery: ', cityNames)
+    //return cityNames;
+}
+*/
+function appendStatus(page, value, questionCount) {
+    var statusElem = document.createElement('p');
+    var statusString;
+    if (value) { // if the user answers the question correctly
+        statusString = questionCount + '.' + ' Correct'; // example: '3. Correct'
+        statusElem.innerText = statusString;
+        statusElem.style.color = 'darkgreen';
+        statusElem.style.fontWeight = '700'; // make the status easy to read
+    } else { // if the user answers the question incorrectly
+        statusString = questionCount + '.' + ' Incorrect. You have lost 5 seconds.'; // example: '5. Incorrect. You have lost 5 seconds.'
+        statusElem.innerText = statusString;
+        statusElem.style.color = 'darkred';
+        statusElem.style.fontWeight = '700';
+    }
+    if (questionCount < questions.length) { // this applies for the first question through the second-to-last question, whose statuses appear in quizContainer
+        statusElem.style.margin = '10px 20px 0 20px';
+        statusElem.style.paddingBottom = '5px';
+    }
+    page.appendChild(statusElem);
+    if (questionCount === questions.length) { // this applies for the last question
+        var removeStatusElem = setTimeout(function () {
+            statusElem.style.visibility = 'hidden';
+        }, 3000); // remove the status for the last question from the page after 3 seconds
+    }
+}
 
 function showForecastContainer() {
     choiceContainer.style.display = "none";

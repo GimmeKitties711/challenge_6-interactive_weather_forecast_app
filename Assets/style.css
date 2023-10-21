@@ -35,7 +35,7 @@ body {
     border: 1px solid black;
 }
 
-#city-name, #current-date-container {
+#city-state-country, #current-date-container {
     display: inline-block;
 }
 
