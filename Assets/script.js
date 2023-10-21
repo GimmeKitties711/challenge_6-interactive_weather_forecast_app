@@ -161,15 +161,15 @@ function populateFutureWeather(object) {
         futureHumidities[i].textContent = object[i].main.humidity;
     }
 
-    dateOneDayOut.textContent = dayjs().add(1, 'day').format('M/DD/YYYY');
-    // dateTwoDaysOut.textContent = dayjs().add(2, 'day').format('M/DD/YYYY');
-    // dateThreeDaysOut.textContent = dayjs().add(3, 'day').format('M/DD/YYYY');
-    // dateFourDaysOut.textContent = dayjs().add(4, 'day').format('M/DD/YYYY');
-    // dateFiveDaysOut.textContent = dayjs().add(5, 'day').format('M/DD/YYYY');
-    weatherIconOneDayOut.textContent = selectWeatherIcon(object[0].weather[0].description);
-    temperatureOneDayOut.textContent = convertTemperature(object[0].main.temp).toFixed(2);
-    windOneDayOut.textContent = object[0].wind.speed;
-    humidityOneDayOut.textContent = object[0].main.humidity;
+    // dateOneDayOut.textContent = dayjs().add(1, 'day').format('M/DD/YYYY');
+    // // dateTwoDaysOut.textContent = dayjs().add(2, 'day').format('M/DD/YYYY');
+    // // dateThreeDaysOut.textContent = dayjs().add(3, 'day').format('M/DD/YYYY');
+    // // dateFourDaysOut.textContent = dayjs().add(4, 'day').format('M/DD/YYYY');
+    // // dateFiveDaysOut.textContent = dayjs().add(5, 'day').format('M/DD/YYYY');
+    // weatherIconOneDayOut.textContent = selectWeatherIcon(object[0].weather[0].description);
+    // temperatureOneDayOut.textContent = convertTemperature(object[0].main.temp).toFixed(2);
+    // windOneDayOut.textContent = object[0].wind.speed;
+    // humidityOneDayOut.textContent = object[0].main.humidity;
 }
 
 function getStoredCities() {
