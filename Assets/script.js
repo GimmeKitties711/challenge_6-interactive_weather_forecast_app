@@ -55,6 +55,7 @@ function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
     .then(res => {
         appendSearchOptions(cityOptionsContainer, res.data);
     }))
+    // source for understanding JSON, promises, and .then(): https://stackoverflow.com/questions/37555031/why-does-json-return-a-promise-but-not-when-it-passes-through-then
 
     //console.log('amgery: ', cityNames)
     //return cityNames;
@@ -229,6 +230,7 @@ function appendSearchOptions(elem, object) {
             //console.log('the thingy is: ', object)
             let locationString = chosenCity + ', ' + chosenState + ', ' + chosenCountry;
             locationString = locationString.replaceAll('undefined', 'N/A');
+            // source for the replaceAll() method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll
             cityStateCountry.textContent = locationString;
             fetchCurrentWeatherData(chosenCity, chosenLat, chosenLon);
             fetchFutureWeatherData(chosenLat, chosenLon);

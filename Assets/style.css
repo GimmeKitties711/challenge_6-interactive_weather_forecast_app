@@ -21,6 +21,7 @@ body {
     width: 80%;
     float: right;
 }
+/* source for how to position two divs side-by-side: https://stackoverflow.com/questions/5387392/how-to-get-these-two-divs-side-by-side */
 
 /*
 #search-container, #forecast-container {
