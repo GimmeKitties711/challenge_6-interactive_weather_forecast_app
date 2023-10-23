@@ -4,7 +4,6 @@ function fetchCurrentWeatherData(lat, lon) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIkey}`)
     .then(resp => {return resp.json()})
     .then(json => {
-        console.log('current weather: ', json)
         populateCurrentWeather(json);
     });
 }
@@ -24,27 +23,10 @@ function makeForecast(data) {
     for (let i=0; i<data.length; i+=8) {
         newData.push(data[i]);
     }
-    console.log("future weather: ", newData);
     return newData;
 }
-/*
-function fetchGeoCoordinates(city_name, limit) {
-    console.log('fetching geo coordinates')
-    console.log ("city name: ", city_name, ", limit: ", limit)
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
-    .then(resp =>{
-        return resp.json()})
-    .then(json => {
-        console.log('city names: ', json)
-    
-        fetchCurrentWeatherData(city_name, json[0].lat, json[0].lon)
-        fetchFutureWeatherData(json[0].lat, json[0].lon)
-    });
-}
-*/
-function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
-    //let cityNames;
 
+function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
     console.log('fetching geo coordinates')
     console.log ("city name: ", city_name, ", limit: ", limit)
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
@@ -56,12 +38,7 @@ function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
         appendSearchOptions(cityOptionsContainer, res.data);
     }))
     // source for understanding JSON, promises, and .then(): https://stackoverflow.com/questions/37555031/why-does-json-return-a-promise-but-not-when-it-passes-through-then
-
-    //console.log('amgery: ', cityNames)
-    //return cityNames;
 }
-
-//fetchGeoCoordinates("San Francisco", 10);
 
 let cityStateCountry = document.getElementById("city-state-country");
 let currentDate = document.getElementById("current-date");
@@ -154,18 +131,6 @@ let cityInput = document.getElementById("city-input");
 let choiceContainer = document.getElementById("choice-container");
 let cityOptionsContainer = document.getElementById("city-options-container");
 let forecastContainer = document.getElementById("forecast-container");
-/*
-function validateForm() {
-    var initialsForm = document.forms["submitInitials"]["initials"].value;
-    var initialsRegex = /^[A-Z]{2}$/; // two capital letters
-    var match = initialsForm.match(initialsRegex);
-    if (!match) { // if the user enters anything except two capital letters
-      alert("Please enter valid initials, e.g. 'AB'");
-      return false;
-    }
-    return true;
-}
-*/
 
 function validateForm() {
     let cityForm = document.forms["submitCity"]["cityName"].value;
@@ -194,12 +159,6 @@ let searchHistoryContainer = document.getElementById("search-history-container")
 searchBtn.addEventListener("click", function() {
     if (validateForm()) {
         showChoiceContainer();
-        // let city = document.getElementById("city-input").value;
-        // console.log('city: ', city);
-        // fetchGeoCoordinates(city, 10);
-        //console.log('city input: ', cityInput.value);
-        //console.log('why tho: ', fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10));
-        //appendSearchOptions(cityOptionsContainer, fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10));
         fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10);
     }
 });
@@ -224,6 +183,19 @@ function appendSearchOptions(elem, object) {
     }
     for (i=0; i<object.length; i++) {
         let searchOption = document.createElement('button');
+        searchOption.style.display = 'block';
+        searchOption.style.margin = '5px';
+        searchOption.style.backgroundColor = "lightgrey";
+        searchOption.style.border = "1px black solid";
+        searchOption.style.borderRadius = "5px";
+        searchOption.addEventListener("mouseover", (event) => {
+            event.target.style.backgroundColor = "deepskyblue";
+        });
+        // source for mouseover event: https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseover_event
+        searchOption.addEventListener("mouseout", (event) => {
+            event.target.style.backgroundColor = "lightgrey";
+        });
+        // source for mouseleave and mouseout events: https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseleave_event
         let searchOptionString = 'City: ' + object[i].name + '\nState: ' + object[i].state + '\nCountry: ' + object[i].country + '\nLatitude: ' + object[i].lat + '\nLongitude: ' + object[i].lon;
         searchOptionString = replaceUndefinedWithNA(searchOptionString);
         // source for the replaceAll() method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll
@@ -237,15 +209,12 @@ function appendSearchOptions(elem, object) {
         searchOption.addEventListener("click", function() {
             console.log('clicked')
             console.log('chosen city: ', chosenCity, ', chosen state: ', chosenState, ', chosen country: ', chosenCountry, ', chosen lat: ', chosenLat, ', chosen lon: ', chosenLon)
-            //console.log(object[i])
             showForecastContainer();
-            //console.log('the thingy is: ', object)
             let locationString = chosenCity + ', ' + chosenState + ', ' + chosenCountry;
             locationString = replaceUndefinedWithNA(locationString);
             cityStateCountry.textContent = locationString;
             fetchCurrentWeatherData(chosenLat, chosenLon);
             fetchFutureWeatherData(chosenLat, chosenLon);
-            // showForecastContainer();
             saveNewCity(chosenCity, chosenState, chosenCountry, chosenLat, chosenLon);
             appendSearchHistoryEntries(searchHistoryContainer);
             showClearHistoryButton();
@@ -263,10 +232,18 @@ function appendSearchHistoryEntries(elem) {
     for (i=0; i<storedCities.length; i++) {
         let searchHistoryEntry = document.createElement('button');
         searchHistoryEntry.style.display = 'block';
-        let searchHistoryEntryString = storedCities[i].city + ', ' + storedCities[i].state + ', ' + storedCities[i].country; //'City: ' + storedCities[i].city + '\nLatitude: ' + storedCities[i].lat + '\nLongitude: ' + storedCities[i].lon;
+        searchHistoryEntry.style.backgroundColor = "lightgrey";
+        searchHistoryEntry.style.border = "1px black solid";
+        searchHistoryEntry.style.borderRadius = "5px";
+        searchHistoryEntry.addEventListener("mouseover", (event) => {
+            event.target.style.backgroundColor = "deepskyblue";
+        });
+        searchHistoryEntry.addEventListener("mouseout", (event) => {
+            event.target.style.backgroundColor = "lightgrey";
+        });
+        let searchHistoryEntryString = storedCities[i].city + ', ' + storedCities[i].state + ', ' + storedCities[i].country;
         searchHistoryEntryString = replaceUndefinedWithNA(searchHistoryEntryString);
         searchHistoryEntry.innerText = searchHistoryEntryString;
-        //let chosenCity = storedCities[i].city;
         let chosenLat = storedCities[i].lat;
         let chosenLon = storedCities[i].lon;
         searchHistoryEntry.addEventListener("click", function() {
@@ -280,54 +257,6 @@ function appendSearchHistoryEntries(elem) {
         elem.appendChild(searchHistoryEntry);
     }
 }
-
-/*
-function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
-    //let cityNames;
-
-    console.log('fetching geo coordinates')
-    console.log ("city name: ", city_name, ", limit: ", limit)
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
-    .then(resp => resp.json()
-    .then(json => ({
-        data: json,
-    }))
-    .then(res => {
-        appendSearchOptions(cityOptionsContainer, res.data);
-    }))
-
-    //console.log('amgery: ', cityNames)
-    //return cityNames;
-}
-*/
-
-/*
-function appendStatus(page, value, questionCount) {
-    var statusElem = document.createElement('p');
-    var statusString;
-    if (value) { // if the user answers the question correctly
-        statusString = questionCount + '.' + ' Correct'; // example: '3. Correct'
-        statusElem.innerText = statusString;
-        statusElem.style.color = 'darkgreen';
-        statusElem.style.fontWeight = '700'; // make the status easy to read
-    } else { // if the user answers the question incorrectly
-        statusString = questionCount + '.' + ' Incorrect. You have lost 5 seconds.'; // example: '5. Incorrect. You have lost 5 seconds.'
-        statusElem.innerText = statusString;
-        statusElem.style.color = 'darkred';
-        statusElem.style.fontWeight = '700';
-    }
-    if (questionCount < questions.length) { // this applies for the first question through the second-to-last question, whose statuses appear in quizContainer
-        statusElem.style.margin = '10px 20px 0 20px';
-        statusElem.style.paddingBottom = '5px';
-    }
-    page.appendChild(statusElem);
-    if (questionCount === questions.length) { // this applies for the last question
-        var removeStatusElem = setTimeout(function () {
-            statusElem.style.visibility = 'hidden';
-        }, 3000); // remove the status for the last question from the page after 3 seconds
-    }
-}
-*/
 
 function showForecastContainer() {
     choiceContainer.style.display = "none";

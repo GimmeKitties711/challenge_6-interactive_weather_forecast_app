@@ -3,9 +3,19 @@
     --font_family: 'Trebuchet MS', 'Public Sans', 'Lucida Sans', Arial, 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
 }
 
-body {
+body, button, input {
     font-family: var(--font_family);
     /*background-color: #f0f0f0;*/
+}
+
+input {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+h1 {
+    background: linear-gradient(45deg, blue, transparent);
+    text-align: center;
 }
 
 #search-container {
@@ -13,11 +23,44 @@ body {
     float: left;
 }
 
+#search-btn {
+    background-color: deepskyblue;
+}
+
+#search-btn:hover {
+    background-color: aqua;
+}
+
+#clear-history-btn {
+    border: 1px black solid;
+    border-radius: 5px;
+    color: ghostwhite;
+    background-color: red;
+}
+
+#clear-history-btn:hover {
+    background-color: darkred;
+}
+
 #choice-container {
     display: none;
+    margin-left: 10px;
+    width: 80%;
+    float: right;
+}
+
+#home-page-btn {
+    border: 1px black solid;
+    border-radius: 5px;
+    background-color: lightgrey;
+}
+
+#home-page-btn:hover {
+    background-color: deepskyblue
 }
 
 #forecast-container {
+    margin-left: 10px;
     width: 80%;
     float: right;
 }
@@ -47,6 +90,10 @@ body {
 
 #forecast-title {
     margin-top: 20px;
+}
+
+.date-and-description {
+    display: block;
 }
 
 #forecast-one-day-out {
