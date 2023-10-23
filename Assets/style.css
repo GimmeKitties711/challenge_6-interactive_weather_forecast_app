@@ -63,7 +63,8 @@ body {
 }
 
 .forecast-entry {
-    display: inline-block;
+    display: flex;
+    flex-grow: 1;
     flex-wrap: wrap;
     margin-bottom: 10px;
 

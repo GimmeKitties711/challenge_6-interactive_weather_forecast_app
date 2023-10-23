@@ -1,6 +1,6 @@
 let APIkey = "3ea7e44fe8cae8888a2fcecf8667f496";
 
-function fetchCurrentWeatherData(city_name, lat, lon) {
+function fetchCurrentWeatherData(lat, lon) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIkey}`)
     .then(resp => {return resp.json()})
     .then(json => {
@@ -189,6 +189,8 @@ function showChoiceContainer() {
     forecastContainer.style.display = "none";
 }
 
+let searchHistoryContainer = document.getElementById("search-history-container");
+
 searchBtn.addEventListener("click", function() {
     if (validateForm()) {
         showChoiceContainer();
@@ -201,6 +203,14 @@ searchBtn.addEventListener("click", function() {
         fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10);
     }
 });
+
+function showClearHistoryButton() {
+    clearHistoryBtn.style.display = "block";
+}
+
+function replaceUndefinedWithNA(string) {
+    return string.replaceAll('undefined', 'N/A');
+}
 
 function appendSearchOptions(elem, object) {
     if (elem.hasChildNodes()) { // if there are already search options on the page
@@ -215,6 +225,8 @@ function appendSearchOptions(elem, object) {
     for (i=0; i<object.length; i++) {
         let searchOption = document.createElement('button');
         let searchOptionString = 'City: ' + object[i].name + '\nState: ' + object[i].state + '\nCountry: ' + object[i].country + '\nLatitude: ' + object[i].lat + '\nLongitude: ' + object[i].lon;
+        searchOptionString = replaceUndefinedWithNA(searchOptionString);
+        // source for the replaceAll() method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll
         searchOption.innerText = searchOptionString;
         console.log(object[i].lat, object[i].lon)
         let chosenCity = object[i].name;
@@ -229,17 +241,46 @@ function appendSearchOptions(elem, object) {
             showForecastContainer();
             //console.log('the thingy is: ', object)
             let locationString = chosenCity + ', ' + chosenState + ', ' + chosenCountry;
-            locationString = locationString.replaceAll('undefined', 'N/A');
-            // source for the replaceAll() method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll
+            locationString = replaceUndefinedWithNA(locationString);
             cityStateCountry.textContent = locationString;
-            fetchCurrentWeatherData(chosenCity, chosenLat, chosenLon);
+            fetchCurrentWeatherData(chosenLat, chosenLon);
             fetchFutureWeatherData(chosenLat, chosenLon);
             // showForecastContainer();
-            //saveNewCity(object[i].name);
+            saveNewCity(chosenCity, chosenState, chosenCountry, chosenLat, chosenLon);
+            appendSearchHistoryEntries(searchHistoryContainer);
+            showClearHistoryButton();
+            console.log('stored cities: ', getStoredCities())
         });
         elem.appendChild(searchOption);
     }
 }
+
+function appendSearchHistoryEntries(elem) {
+    let storedCities = getStoredCities();
+    if (elem.hasChildNodes() || storedCities.length === 0) { // if there are already search history entries on the page
+        elem.innerHTML = '';
+    }
+    for (i=0; i<storedCities.length; i++) {
+        let searchHistoryEntry = document.createElement('button');
+        searchHistoryEntry.style.display = 'block';
+        let searchHistoryEntryString = storedCities[i].city + ', ' + storedCities[i].state + ', ' + storedCities[i].country; //'City: ' + storedCities[i].city + '\nLatitude: ' + storedCities[i].lat + '\nLongitude: ' + storedCities[i].lon;
+        searchHistoryEntryString = replaceUndefinedWithNA(searchHistoryEntryString);
+        searchHistoryEntry.innerText = searchHistoryEntryString;
+        //let chosenCity = storedCities[i].city;
+        let chosenLat = storedCities[i].lat;
+        let chosenLon = storedCities[i].lon;
+        searchHistoryEntry.addEventListener("click", function() {
+            showForecastContainer();
+            let locationString = searchHistoryEntryString;
+            locationString = replaceUndefinedWithNA(locationString);
+            cityStateCountry.textContent = locationString;
+            fetchCurrentWeatherData(chosenLat, chosenLon);
+            fetchFutureWeatherData(chosenLat, chosenLon);
+        });
+        elem.appendChild(searchHistoryEntry);
+    }
+}
+
 /*
 function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
     //let cityNames;
@@ -259,6 +300,8 @@ function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
     //return cityNames;
 }
 */
+
+/*
 function appendStatus(page, value, questionCount) {
     var statusElem = document.createElement('p');
     var statusString;
@@ -284,6 +327,7 @@ function appendStatus(page, value, questionCount) {
         }, 3000); // remove the status for the last question from the page after 3 seconds
     }
 }
+*/
 
 function showForecastContainer() {
     choiceContainer.style.display = "none";
@@ -300,8 +344,47 @@ function getStoredCities() {
     return storedCities;
 }
 
-function saveNewCity(city) {
+function saveNewCity(city, state, country, lat, lon) {
     let storedCities = getStoredCities();
-    storedCities.push(city);
+    storedCities.push({"city": city, "state": state, "country": country, "lat": lat, "lon": lon});
     localStorage.setItem("cities", JSON.stringify(storedCities));
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    appendSearchHistoryEntries(searchHistoryContainer);
+    loadDefaultCity();
+});
+
+function loadDefaultCity() {
+    let storedCities = getStoredCities();
+    if (storedCities.length === 0) {
+        cityStateCountry.textContent = 'Berkeley, CA, US';
+        fetchCurrentWeatherData(37.8708393, -122.272863);
+        fetchFutureWeatherData(37.8708393, -122.272863);
+        // if no cities have been searched, load Berkeley, CA by default
+    } else {
+        // if at least one city has been searched, load the most recently searched city
+        let mostRecentCity = storedCities[storedCities.length-1];
+        let locationString = mostRecentCity.city + ', ' + mostRecentCity.state + ', ' + mostRecentCity.country;
+        locationString = replaceUndefinedWithNA(locationString);
+        cityStateCountry.textContent = locationString;
+        fetchCurrentWeatherData(mostRecentCity.lat, mostRecentCity.lon);
+        fetchFutureWeatherData(mostRecentCity.lat, mostRecentCity.lon);
+    }
+}
+
+let clearHistoryBtn = document.getElementById("clear-history-btn");
+
+function clearSearchHistory() {
+    localStorage.removeItem("cities");
+    appendSearchHistoryEntries(searchHistoryContainer);
+}
+
+function hideClearHistoryButton() {
+    clearHistoryBtn.style.display = "none";
+}
+
+clearHistoryBtn.addEventListener("click", function() {
+    clearSearchHistory();
+    hideClearHistoryButton();
+});
