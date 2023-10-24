@@ -5,7 +5,7 @@
     --border: 1px solid black;
     --border-radius: 5px;
     --text-color: ghostwhite;
-    --hover-color: deepskyblue; /* this variable will also be used as the background color of the search button and the forecast entries */
+    --bg-and-hover-color: deepskyblue;
     --font-family: 'Trebuchet MS', 'Public Sans', 'Lucida Sans', Arial, 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
 }
 
@@ -41,7 +41,7 @@ form {
 }
 
 #search-btn {
-    background-color: var(--hover-color);
+    background-color: var(--bg-and-hover-color);
 }
 
 #search-btn:hover {
@@ -76,7 +76,7 @@ form {
 }
 
 #home-page-btn:hover {
-    background-color: var(--hover-color)
+    background-color: var(--bg-and-hover-color)
 }
 
 #forecast-container {
@@ -88,10 +88,10 @@ form {
 
 @media only screen and (max-width: 500px) {
     #search-container, #choice-container, #forecast-container {
-        width: 100%; /* forces the search container and the forecast container to display vertically */
+        width: 100%; /* force the search container to display on top of the forecast container/choice container */
     }
     #city-input {
-        width: 130px; /* make the input box larger when the search container is on top of the forecast container */
+        width: 130px; /* make the input box larger when the search container has no containers beside it */
     }
 }
 
@@ -138,5 +138,5 @@ form {
     margin-bottom: var(--small-margin);
     padding: var(--small-margin);
     color: var(--text-color);
-    background-color: var(--hover-color);
+    background-color: var(--bg-and-hover-color);
 }

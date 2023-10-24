@@ -23,7 +23,7 @@ function makeForecast(data) {
     for (let i=0; i<data.length; i+=8) {
         newData.push(data[i]);
     }
-    // the json.list array contains data for every 3 hours for the next 5 days. this means that day contains entries for the times 03:00, 06:00...21:00, 00:00. this adds up to 8 entries per day × 5 days = 40 entries. this function takes every 8th entry to return an array with data for every 24 hours instead of 3 hours, reducing the number of entries to 5.
+    // the json.list array in fetchFutureWeatherData() contains data for every 3 hours for the next 5 days. this means that each day contains entries for the times 03:00, 06:00...21:00, 00:00. this adds up to 8 entries per day × 5 days = 40 entries. this function takes every 8th entry to return an array with data for every 24 hours instead of every 3 hours, reducing the number of entries to 5.
     return newData;
 }
 
@@ -101,15 +101,15 @@ let futureHumidities = [humidityOneDayOut, humidityTwoDaysOut, humidityThreeDays
 
 function populateCurrentWeather(object) {
     currentDate.textContent = dayjs().format('M/DD/YYYY');
-    // source for how to get current date in dayjs(): https://day.js.org/docs/en/parse/now
-    // source for how to format date in dayjs(): https://day.js.org/docs/en/display/format
+    // source for how to get current date in dayjs: https://day.js.org/docs/en/parse/now
+    // source for how to format date in dayjs: https://day.js.org/docs/en/display/format
     currentWeatherDescription.textContent = object.weather[0].description;
     let weatherIcon = object.weather[0].icon;
     let weatherIconURL = `https://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
     currentWeatherIcon.setAttribute('src', weatherIconURL);
     // source for weather icons, their meaning, and how to use them: https://openweathermap.org/weather-conditions
-    currentTemperature.textContent = convertTemperature(object.main.temp).toFixed(2); // toFixed(2) rounds to two decimal places
-    // source for how to round a number to two decimal places: https://stackoverflow.com/questions/11832914/how-to-round-to-at-most-2-decimal-places-if-necessary
+    currentTemperature.textContent = convertTemperature(object.main.temp).toFixed(2); // toFixed(2) rounds a number to 2 decimal places
+    // source for how to round a number to 2 decimal places: https://stackoverflow.com/questions/11832914/how-to-round-to-at-most-2-decimal-places-if-necessary
     currentWind.textContent = object.wind.speed.toFixed(2);
     currentHumidity.textContent = object.main.humidity;
 }
@@ -123,7 +123,7 @@ function populateFutureWeather(object) {
     let weatherIcon;
     let weatherIconURL;
 
-    // this function is similar to populateCurrentWeather(), but weatherIcon and weatherIconURL are declared outside the for loop because it is better to not have to keep redefining them for each iteration of the loop.
+    // this function is similar to populateCurrentWeather(), but weatherIcon and weatherIconURL are declared outside the for loop, because it is better to not have to keep redefining them for each iteration of the loop.
     for (let i = 0; i < object.length; i++) {
         futureDates[i].textContent = dayjs().add(i+1, 'day').format('M/DD/YYYY');
         futureDescriptions[i].textContent = object[i].weather[0].description;
@@ -145,9 +145,9 @@ let forecastContainer = document.getElementById("forecast-container");
 
 function validateForm() {
     let cityForm = document.forms["submitCity"]["cityName"].value;
-    let cityRegex = /^[A-Za-z\s]+$/; // only letters and spaces
+    let cityRegex = /^[A-Za-z\s,.]+$/; // only letters and spaces, commas, and periods are allowed
     let match = cityForm.match(cityRegex);
-    if (!match) { // if the user enters anything except letters and spaces
+    if (!match) { // if the user enters anything except the allowed characters
       alert("Please enter a valid city name, e.g. 'San Francisco'");
       return false;
     }
@@ -181,11 +181,12 @@ function showClearHistoryButton() {
 
 function replaceUndefinedWithNA(string) {
     return string.replaceAll('undefined', 'N/A'); // it is better to display 'N/A' than 'undefined'
+    // source for the replaceAll() method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll
 }
 
 function appendSearchOptions(elem, object) {
     if (elem.hasChildNodes()) { // if there are already search options on the page
-    // source for the hasChildNodes() function: https://developer.mozilla.org/en-US/docs/Web/API/Node/hasChildNodes
+    // source for the hasChildNodes() method: https://developer.mozilla.org/en-US/docs/Web/API/Node/hasChildNodes
         elem.innerHTML = ''; // remove the search options from the page
     }
     if (object.length === 0) { // if there are no search results for the city that the user entered
@@ -210,7 +211,6 @@ function appendSearchOptions(elem, object) {
         // source for mouseleave and mouseout events: https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseleave_event
         let searchOptionString = 'City: ' + object[i].name + '\nState: ' + object[i].state + '\nCountry: ' + object[i].country + '\nLatitude: ' + object[i].lat + '\nLongitude: ' + object[i].lon; // display the city name, state, country, latitude, and longitude of each search result
         searchOptionString = replaceUndefinedWithNA(searchOptionString);
-        // source for the replaceAll() method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll
         searchOption.innerText = searchOptionString;
         let chosenCity = object[i].name;
         let chosenState = object[i].state;
@@ -236,7 +236,7 @@ function appendSearchOptions(elem, object) {
 function appendSearchHistoryEntries(elem) {
     let storedCities = getStoredCities();
     if (elem.hasChildNodes() || storedCities.length === 0) { // if there are already search history entries on the page, or if no cities have been searched
-        elem.innerHTML = ''; // remove any existing search history entries. this prevents the search history entries from being duplicated every time the page loads or a new search is made.
+        elem.innerHTML = ''; // remove any existing search history entries. this prevents the entries from being duplicated every time the page loads or a new search is made.
     }
     for (i=0; i<storedCities.length; i++) {
         let searchHistoryEntry = document.createElement('button');
@@ -251,13 +251,13 @@ function appendSearchHistoryEntries(elem) {
         searchHistoryEntry.addEventListener("mouseout", (event) => {
             event.target.style.backgroundColor = "lightgrey";
         });
-        let searchHistoryEntryString = storedCities[i].city + ', ' + storedCities[i].state + ', ' + storedCities[i].country; // latitude and longitude are not included in the search history entries, as they are not relevant to the user
+        let searchHistoryEntryString = storedCities[i].city + ', ' + storedCities[i].state + ', ' + storedCities[i].country; // latitude and longitude are not included in the search history entries to keep the entries brief
         searchHistoryEntryString = replaceUndefinedWithNA(searchHistoryEntryString);
         searchHistoryEntry.innerText = searchHistoryEntryString;
         let chosenLat = storedCities[i].lat;
         let chosenLon = storedCities[i].lon;
         searchHistoryEntry.addEventListener("click", function() {
-            showForecastContainer(); // show the forecast container (this action will take the user away from the choice container)
+            showForecastContainer(); // show the forecast container (this action will hide the choice container if it is showing)
             let locationString = searchHistoryEntryString;
             locationString = replaceUndefinedWithNA(locationString);
             cityStateCountry.textContent = locationString;
@@ -287,7 +287,7 @@ function getStoredCities() {
 
 function saveNewCity(city, state, country, lat, lon) {
     let storedCities = getStoredCities();
-    storedCities.push({"city": city, "state": state, "country": country, "lat": lat, "lon": lon}); // add an object with all 5 properties to the array
+    storedCities.push({"city": city, "state": state, "country": country, "lat": lat, "lon": lon}); // add an object with all 5 properties to the end of the array
     localStorage.setItem("cities", JSON.stringify(storedCities));
 }
 
@@ -333,5 +333,5 @@ function hideClearHistoryButton() {
 
 clearHistoryBtn.addEventListener("click", function() {
     clearSearchHistory();
-    hideClearHistoryButton(); // hide the clear history button when the user clicks it because there should not be a button that says 'Clear Search History' when there is no search history
+    hideClearHistoryButton(); // hide the clear history button after the user clicks it because there should not be a button that says 'Clear Search History' when there is no search history
 });
