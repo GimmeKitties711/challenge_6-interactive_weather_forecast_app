@@ -9,7 +9,7 @@ function fetchCurrentWeatherData(lat, lon) {
 }
 
 function fetchFutureWeatherData(lat, lon) {
-    fetch(`http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${APIkey}`)
+    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${APIkey}`)
     .then(resp => {return resp.json()})
     .then(json => {
         populateFutureWeather(makeForecast(json.list)); // populate the future weather section
