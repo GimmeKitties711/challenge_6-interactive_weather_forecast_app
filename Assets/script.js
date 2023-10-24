@@ -28,8 +28,6 @@ function makeForecast(data) {
 }
 
 function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
-    console.log('fetching geo coordinates')
-    console.log ("city name: ", city_name, ", limit: ", limit)
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
     .then(resp => resp.json()
     .then(json => ({
@@ -171,6 +169,7 @@ searchBtn.addEventListener("click", function() {
     if (validateForm()) { // if the user enters a valid city name
         showChoiceContainer();
         fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10);
+        console.log(cityOptionsContainer)
         // show the choice container and populate it with city options based on the user's input
     }
 });
@@ -184,15 +183,20 @@ function replaceUndefinedWithNA(string) {
     // source for the replaceAll() method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll
 }
 
+let cityOptionsQuestion = document.getElementById("city-options-question");
+
 function appendSearchOptions(elem, object) {
     if (elem.hasChildNodes()) { // if there are already search options on the page
     // source for the hasChildNodes() method: https://developer.mozilla.org/en-US/docs/Web/API/Node/hasChildNodes
         elem.innerHTML = ''; // remove the search options from the page
     }
     if (object.length === 0) { // if there are no search results for the city that the user entered
+        cityOptionsQuestion.style.visibility = "hidden"; // hide the question 'Which city would you like to see?' because there are no search results
         let noResults = document.createElement('h2');
         noResults.innerText = 'No results found. Please enter a different city and try again.';
         elem.appendChild(noResults);
+    } else {
+        cityOptionsQuestion.style.visibility = "visible";
     }
     for (i=0; i<object.length; i++) { // if there is at least one search result
         let searchOption = document.createElement('button');
@@ -287,7 +291,15 @@ function getStoredCities() {
 
 function saveNewCity(city, state, country, lat, lon) {
     let storedCities = getStoredCities();
-    storedCities.push({"city": city, "state": state, "country": country, "lat": lat, "lon": lon}); // add an object with all 5 properties to the end of the array
+    let newCity = {"city": city, "state": state, "country": country, "lat": lat, "lon": lon}; // object with all 5 properties
+    console.log('new city: ', newCity)
+    console.log('stored cities: ', storedCities)
+    for (i=storedCities.length-1; i>=0; i--) {
+        if (storedCities[i].lat === newCity.lat && storedCities[i].lon === newCity.lon) {
+            storedCities.splice(i, 1); // remove the city from the array. we start from the end of the array and work backwards because splice() changes the length of the array, and if we start from the beginning, the indexes of the remaining elements will change as we remove elements from the array.
+        }
+    }
+    storedCities.push(newCity); // add the new city to the end of the array
     localStorage.setItem("cities", JSON.stringify(storedCities));
 }
 
