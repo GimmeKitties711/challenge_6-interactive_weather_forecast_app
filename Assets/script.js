@@ -26,7 +26,7 @@ function makeForecast(data) {
 }
 
 function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
+    fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city_name}&limit=${limit}&appid=${APIkey}`)
     .then(resp => resp.json()
     .then(json => ({
         data: json,
