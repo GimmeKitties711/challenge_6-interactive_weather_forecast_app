@@ -169,7 +169,6 @@ searchBtn.addEventListener("click", function() {
     if (validateForm()) { // if the user enters a valid city name
         showChoiceContainer();
         fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10);
-        console.log(cityOptionsContainer)
         // show the choice container and populate it with city options based on the user's input
     }
 });
@@ -292,8 +291,6 @@ function getStoredCities() {
 function saveNewCity(city, state, country, lat, lon) {
     let storedCities = getStoredCities();
     let newCity = {"city": city, "state": state, "country": country, "lat": lat, "lon": lon}; // object with all 5 properties
-    console.log('new city: ', newCity)
-    console.log('stored cities: ', storedCities)
     for (i=storedCities.length-1; i>=0; i--) {
         if (storedCities[i].lat === newCity.lat && storedCities[i].lon === newCity.lon) {
             storedCities.splice(i, 1); // remove the city from the array. we start from the end of the array and work backwards because splice() changes the length of the array, and if we start from the beginning, the indexes of the remaining elements will change as we remove elements from the array.
