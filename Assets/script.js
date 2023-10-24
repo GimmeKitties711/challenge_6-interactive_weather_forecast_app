@@ -99,7 +99,7 @@ let futureHumidities = [humidityOneDayOut, humidityTwoDaysOut, humidityThreeDays
 
 function populateCurrentWeather(object) {
     currentDate.textContent = dayjs().format('M/DD/YYYY');
-    // source for how to get current date in dayjs: https://day.js.org/docs/en/parse/now
+    // source for how to get the current date in dayjs: https://day.js.org/docs/en/parse/now
     // source for how to format a date in dayjs: https://day.js.org/docs/en/display/format
     currentWeatherDescription.textContent = object.weather[0].description;
     let weatherIcon = object.weather[0].icon;
