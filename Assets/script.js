@@ -4,7 +4,7 @@ function fetchCurrentWeatherData(lat, lon) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIkey}`)
     .then(resp => {return resp.json()})
     .then(json => {
-        populateCurrentWeather(json);
+        populateCurrentWeather(json); // populate the current weather section
     });
 }
 
@@ -14,7 +14,7 @@ function fetchFutureWeatherData(lat, lon) {
         return resp.json()
     })
     .then(json => {
-        populateFutureWeather(makeForecast(json.list))
+        populateFutureWeather(makeForecast(json.list)); // populate the future weather section
     });
 }
 
@@ -23,6 +23,7 @@ function makeForecast(data) {
     for (let i=0; i<data.length; i+=8) {
         newData.push(data[i]);
     }
+    // the json.list array contains data for every 3 hours for the next 5 days. this means that day contains entries for the times 03:00, 06:00...21:00, 00:00. this adds up to 8 entries per day × 5 days = 40 entries. this function takes every 8th entry to return an array with data for every 24 hours instead of 3 hours, reducing the number of entries to 5.
     return newData;
 }
 
@@ -36,10 +37,12 @@ function fetchGeoCoordinatesWithoutProceeding(city_name, limit) {
     }))
     .then(res => {
         appendSearchOptions(cityOptionsContainer, res.data);
+        // this function fetches an array of up to 5 cities from the OpenWeatherMap API that match the user's input. the name of this function includes the words 'without proceeding' because searching for a city name takes the user to the choice container, where the options corresponding to the searched name are laid out as buttons for the user to select.
     }))
     // source for understanding JSON, promises, and .then(): https://stackoverflow.com/questions/37555031/why-does-json-return-a-promise-but-not-when-it-passes-through-then
 }
 
+// current day
 let cityStateCountry = document.getElementById("city-state-country");
 let currentDate = document.getElementById("current-date");
 let currentWeatherDescription = document.getElementById("current-weather-description");
@@ -48,6 +51,7 @@ let currentTemperature = document.getElementById("current-temperature");
 let currentWind = document.getElementById("current-wind");
 let currentHumidity = document.getElementById("current-humidity");
 
+// forecast day one (one day from now)
 let dateOneDayOut = document.getElementById("date-one-day-out");
 let descriptionOneDayOut = document.getElementById("description-one-day-out");
 let weatherIconOneDayOut = document.getElementById("weather-icon-one-day-out");
@@ -55,6 +59,7 @@ let temperatureOneDayOut = document.getElementById("temperature-one-day-out");
 let windOneDayOut = document.getElementById("wind-one-day-out");
 let humidityOneDayOut = document.getElementById("humidity-one-day-out");
 
+// forecast day two
 let dateTwoDaysOut = document.getElementById("date-two-days-out");
 let descriptionTwoDaysOut = document.getElementById("description-two-days-out");
 let weatherIconTwoDaysOut = document.getElementById("weather-icon-two-days-out");
@@ -62,6 +67,7 @@ let temperatureTwoDaysOut = document.getElementById("temperature-two-days-out");
 let windTwoDaysOut = document.getElementById("wind-two-days-out");
 let humidityTwoDaysOut = document.getElementById("humidity-two-days-out");
 
+// forecast day three
 let dateThreeDaysOut = document.getElementById("date-three-days-out");
 let descriptionThreeDaysOut = document.getElementById("description-three-days-out");
 let weatherIconThreeDaysOut = document.getElementById("weather-icon-three-days-out");
@@ -69,6 +75,7 @@ let temperatureThreeDaysOut = document.getElementById("temperature-three-days-ou
 let windThreeDaysOut = document.getElementById("wind-three-days-out");
 let humidityThreeDaysOut = document.getElementById("humidity-three-days-out");
 
+// forecast day four
 let dateFourDaysOut = document.getElementById("date-four-days-out");
 let descriptionFourDaysOut = document.getElementById("description-four-days-out");
 let weatherIconFourDaysOut = document.getElementById("weather-icon-four-days-out");
@@ -76,6 +83,7 @@ let temperatureFourDaysOut = document.getElementById("temperature-four-days-out"
 let windFourDaysOut = document.getElementById("wind-four-days-out");
 let humidityFourDaysOut = document.getElementById("humidity-four-days-out");
 
+// forecast day five
 let dateFiveDaysOut = document.getElementById("date-five-days-out");
 let descriptionFiveDaysOut = document.getElementById("description-five-days-out");
 let weatherIconFiveDaysOut = document.getElementById("weather-icon-five-days-out");
@@ -83,6 +91,7 @@ let temperatureFiveDaysOut = document.getElementById("temperature-five-days-out"
 let windFiveDaysOut = document.getElementById("wind-five-days-out");
 let humidityFiveDaysOut = document.getElementById("humidity-five-days-out");
 
+// arrays for future weather data. these will be used in a for loop to populate the future weather section.
 let futureDates = [dateOneDayOut, dateTwoDaysOut, dateThreeDaysOut, dateFourDaysOut, dateFiveDaysOut];
 let futureDescriptions = [descriptionOneDayOut, descriptionTwoDaysOut, descriptionThreeDaysOut, descriptionFourDaysOut, descriptionFiveDaysOut];
 let futureWeatherIcons = [weatherIconOneDayOut, weatherIconTwoDaysOut, weatherIconThreeDaysOut, weatherIconFourDaysOut, weatherIconFiveDaysOut];
@@ -107,12 +116,14 @@ function populateCurrentWeather(object) {
 
 function convertTemperature(kelvin) {
     return (kelvin - 273.15) * 9/5 + 32;
+    // kelvin - 273.15 converts kelvin to celsius, then (celsius * 9/5) + 32 converts celsius to fahrenheit
 }
 
 function populateFutureWeather(object) {
     let weatherIcon;
     let weatherIconURL;
 
+    // this function is similar to populateCurrentWeather(), but weatherIcon and weatherIconURL are declared outside the for loop because it is better to not have to keep redefining them for each iteration of the loop.
     for (let i = 0; i < object.length; i++) {
         futureDates[i].textContent = dayjs().add(i+1, 'day').format('M/DD/YYYY');
         futureDescriptions[i].textContent = object[i].weather[0].description;
@@ -157,9 +168,10 @@ function showChoiceContainer() {
 let searchHistoryContainer = document.getElementById("search-history-container");
 
 searchBtn.addEventListener("click", function() {
-    if (validateForm()) {
+    if (validateForm()) { // if the user enters a valid city name
         showChoiceContainer();
         fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10);
+        // show the choice container and populate it with city options based on the user's input
     }
 });
 
@@ -168,7 +180,7 @@ function showClearHistoryButton() {
 }
 
 function replaceUndefinedWithNA(string) {
-    return string.replaceAll('undefined', 'N/A');
+    return string.replaceAll('undefined', 'N/A'); // it is better to display 'N/A' than 'undefined'
 }
 
 function appendSearchOptions(elem, object) {
@@ -176,12 +188,12 @@ function appendSearchOptions(elem, object) {
     // source for the hasChildNodes() function: https://developer.mozilla.org/en-US/docs/Web/API/Node/hasChildNodes
         elem.innerHTML = ''; // remove the search options from the page
     }
-    if (object.length === 0) {
+    if (object.length === 0) { // if there are no search results for the city that the user entered
         let noResults = document.createElement('h2');
         noResults.innerText = 'No results found. Please enter a different city and try again.';
         elem.appendChild(noResults);
     }
-    for (i=0; i<object.length; i++) {
+    for (i=0; i<object.length; i++) { // if there is at least one search result
         let searchOption = document.createElement('button');
         searchOption.style.display = 'block';
         searchOption.style.margin = '5px 5px 5px 0';
@@ -189,36 +201,33 @@ function appendSearchOptions(elem, object) {
         searchOption.style.border = "1px black solid";
         searchOption.style.borderRadius = "5px";
         searchOption.addEventListener("mouseover", (event) => {
-            event.target.style.backgroundColor = "deepskyblue";
+            event.target.style.backgroundColor = "deepskyblue"; // turn the button deepskyblue when the user hovers over it
         });
         // source for mouseover event: https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseover_event
         searchOption.addEventListener("mouseout", (event) => {
-            event.target.style.backgroundColor = "lightgrey";
+            event.target.style.backgroundColor = "lightgrey"; // turn the button back to lightgrey when the user stops hovering over it
         });
         // source for mouseleave and mouseout events: https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseleave_event
-        let searchOptionString = 'City: ' + object[i].name + '\nState: ' + object[i].state + '\nCountry: ' + object[i].country + '\nLatitude: ' + object[i].lat + '\nLongitude: ' + object[i].lon;
+        let searchOptionString = 'City: ' + object[i].name + '\nState: ' + object[i].state + '\nCountry: ' + object[i].country + '\nLatitude: ' + object[i].lat + '\nLongitude: ' + object[i].lon; // display the city name, state, country, latitude, and longitude of each search result
         searchOptionString = replaceUndefinedWithNA(searchOptionString);
         // source for the replaceAll() method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll
         searchOption.innerText = searchOptionString;
-        console.log(object[i].lat, object[i].lon)
         let chosenCity = object[i].name;
         let chosenState = object[i].state;
         let chosenCountry = object[i].country;
         let chosenLat = object[i].lat;
         let chosenLon = object[i].lon;
         searchOption.addEventListener("click", function() {
-            console.log('clicked')
-            console.log('chosen city: ', chosenCity, ', chosen state: ', chosenState, ', chosen country: ', chosenCountry, ', chosen lat: ', chosenLat, ', chosen lon: ', chosenLon)
             showForecastContainer();
             let locationString = chosenCity + ', ' + chosenState + ', ' + chosenCountry;
             locationString = replaceUndefinedWithNA(locationString);
-            cityStateCountry.textContent = locationString;
+            cityStateCountry.textContent = locationString; // city, state, country. if any of the fields are undefined (this happens most often with the state field), they are replaced with 'N/A'
             fetchCurrentWeatherData(chosenLat, chosenLon);
             fetchFutureWeatherData(chosenLat, chosenLon);
-            saveNewCity(chosenCity, chosenState, chosenCountry, chosenLat, chosenLon);
-            appendSearchHistoryEntries(searchHistoryContainer);
-            showClearHistoryButton();
-            console.log('stored cities: ', getStoredCities())
+            // fetch current and future weather data for the chosen city
+            saveNewCity(chosenCity, chosenState, chosenCountry, chosenLat, chosenLon); // save the chosen city to localStorage
+            appendSearchHistoryEntries(searchHistoryContainer); // add it to the search history list in the search history container
+            showClearHistoryButton(); // the clear history button is revealed if it was hidden before
         });
         elem.appendChild(searchOption);
     }
@@ -226,8 +235,8 @@ function appendSearchOptions(elem, object) {
 
 function appendSearchHistoryEntries(elem) {
     let storedCities = getStoredCities();
-    if (elem.hasChildNodes() || storedCities.length === 0) { // if there are already search history entries on the page
-        elem.innerHTML = '';
+    if (elem.hasChildNodes() || storedCities.length === 0) { // if there are already search history entries on the page, or if no cities have been searched
+        elem.innerHTML = ''; // remove any existing search history entries. this prevents the search history entries from being duplicated every time the page loads or a new search is made.
     }
     for (i=0; i<storedCities.length; i++) {
         let searchHistoryEntry = document.createElement('button');
@@ -242,18 +251,19 @@ function appendSearchHistoryEntries(elem) {
         searchHistoryEntry.addEventListener("mouseout", (event) => {
             event.target.style.backgroundColor = "lightgrey";
         });
-        let searchHistoryEntryString = storedCities[i].city + ', ' + storedCities[i].state + ', ' + storedCities[i].country;
+        let searchHistoryEntryString = storedCities[i].city + ', ' + storedCities[i].state + ', ' + storedCities[i].country; // latitude and longitude are not included in the search history entries, as they are not relevant to the user
         searchHistoryEntryString = replaceUndefinedWithNA(searchHistoryEntryString);
         searchHistoryEntry.innerText = searchHistoryEntryString;
         let chosenLat = storedCities[i].lat;
         let chosenLon = storedCities[i].lon;
         searchHistoryEntry.addEventListener("click", function() {
-            showForecastContainer();
+            showForecastContainer(); // show the forecast container (this action will take the user away from the choice container)
             let locationString = searchHistoryEntryString;
             locationString = replaceUndefinedWithNA(locationString);
             cityStateCountry.textContent = locationString;
             fetchCurrentWeatherData(chosenLat, chosenLon);
             fetchFutureWeatherData(chosenLat, chosenLon);
+            // fetch current and future weather data for the previously searched city that the user clicked on
         });
         elem.appendChild(searchHistoryEntry);
     }
@@ -265,27 +275,28 @@ function showForecastContainer() {
 }
 
 homePageBtn.addEventListener("click", showForecastContainer);
+// when the button that says 'Go Back' is clicked, the page goes back to the forecast container and the choice container is hidden
 
 function getStoredCities() {
     let storedCities = JSON.parse(localStorage.getItem("cities"));
-    if (storedCities === null) {
-        storedCities = [];
+    if (storedCities === null) { // if localStorage does not have an item called 'cities'. this if condition is necessary because clearSearchHistory() removes the 'cities' item from localStorage.
+        storedCities = []; // empty array with length 0
     }
     return storedCities;
 }
 
 function saveNewCity(city, state, country, lat, lon) {
     let storedCities = getStoredCities();
-    storedCities.push({"city": city, "state": state, "country": country, "lat": lat, "lon": lon});
+    storedCities.push({"city": city, "state": state, "country": country, "lat": lat, "lon": lon}); // add an object with all 5 properties to the array
     localStorage.setItem("cities", JSON.stringify(storedCities));
 }
 
 document.addEventListener("DOMContentLoaded", function() {
     appendSearchHistoryEntries(searchHistoryContainer);
     let storedCities = getStoredCities();
-    if (storedCities.length > 0) {
+    if (storedCities.length > 0) { // if at least one city has been searched
         showClearHistoryButton();
-    } else {
+    } else { // if no cities have been searched
         hideClearHistoryButton();
     }
     loadMostRecentCity();
@@ -297,9 +308,9 @@ function loadMostRecentCity() {
         cityStateCountry.textContent = 'Berkeley, CA, US';
         fetchCurrentWeatherData(37.8708393, -122.272863);
         fetchFutureWeatherData(37.8708393, -122.272863);
-        // if no cities have been searched, load Berkeley, CA by default
+        // if no cities have been searched, load the data for Berkeley, CA by default
     } else {
-        // if at least one city has been searched, load the most recently searched city
+        // if at least one city has been searched, load the data for the most recently searched city
         let mostRecentCity = storedCities[storedCities.length-1];
         let locationString = mostRecentCity.city + ', ' + mostRecentCity.state + ', ' + mostRecentCity.country;
         locationString = replaceUndefinedWithNA(locationString);
@@ -322,5 +333,5 @@ function hideClearHistoryButton() {
 
 clearHistoryBtn.addEventListener("click", function() {
     clearSearchHistory();
-    hideClearHistoryButton();
+    hideClearHistoryButton(); // hide the clear history button when the user clicks it because there should not be a button that says 'Clear Search History' when there is no search history
 });

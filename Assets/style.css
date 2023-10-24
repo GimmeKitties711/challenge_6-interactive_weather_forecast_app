@@ -1,21 +1,27 @@
 :root {
-    --forecast-entry-margin: 10px;
-    --font_family: 'Trebuchet MS', 'Public Sans', 'Lucida Sans', Arial, 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+    --small-margin: 10px; /* this variable will also be used where padding is 10px */
+    --medium-margin: 15px;
+    --big-margin: 20px;
+    --border: 1px solid black;
+    --border-radius: 5px;
+    --text-color: ghostwhite;
+    --hover-color: deepskyblue; /* this variable will also be used as the background color of the search button and the forecast entries */
+    --font-family: 'Trebuchet MS', 'Public Sans', 'Lucida Sans', Arial, 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
 }
 
 body, button, input {
-    font-family: var(--font_family);
+    font-family: var(--font-family);
     /* use the same font for all of the text on the page */
 }
 
 input {
-    border: 1px solid black;
-    border-radius: 5px;
+    border: var(--border);
+    border-radius: var(--border-radius);
 }
 
 @media only screen and (max-width: 800px) {
     #city-input {
-        width: 90px;
+        width: 90px; /* the input box shrinks to 90px in width when the screen is 800px or less */
     }
 }
 
@@ -25,17 +31,17 @@ h1 {
 }
 
 #search-container {
-    margin-right: 10px;
+    margin-right: var(--small-margin);
     width: 20%;
     float: left;
 }
 
 form {
-    margin-bottom: 15px;
+    margin-bottom: var(--medium-margin);
 }
 
 #search-btn {
-    background-color: deepskyblue;
+    background-color: var(--hover-color);
 }
 
 #search-btn:hover {
@@ -44,10 +50,10 @@ form {
 
 #clear-history-btn {
     display: none;
-    margin-top: 15px;
-    border: 1px black solid;
-    border-radius: 5px;
-    color: ghostwhite;
+    margin-top: var(--medium-margin);
+    border: var(--border);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
     background-color: red;
 }
 
@@ -57,25 +63,23 @@ form {
 
 #choice-container {
     display: none;
-    /*margin-left: 10px;*/
     float: left;
     width: 75%;
     max-width: 900px;
 }
 
 #home-page-btn {
-    margin-top: 20px;
-    border: 1px black solid;
-    border-radius: 5px;
+    margin-top: var(--big-margin);
+    border: var(--border);
+    border-radius: var(--border-radius);
     background-color: lightgrey;
 }
 
 #home-page-btn:hover {
-    background-color: deepskyblue
+    background-color: var(--hover-color)
 }
 
 #forecast-container {
-    /*margin-left: 10px;*/
     float: left;
     width: 75%;
     max-width: 900px;
@@ -87,52 +91,52 @@ form {
         width: 100%; /* forces the search container and the forecast container to display vertically */
     }
     #city-input {
-        width: 130px;
+        width: 130px; /* make the input box larger when the search container is on top of the forecast container */
     }
 }
 
 #current-weather {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid black;
+    margin-top: var(--big-margin);
+    padding: var(--small-margin);
+    border: var(--border);
 }
 
-#city-state-country, #current-date-container {
+.current-date-and-description {
     display: inline-block;
 }
 
 #forecast-next-five-days {
     display: flex;
-    flex-wrap: wrap;
-    margin-top: 10px;
+    flex-wrap: wrap; /* make forecast entries move down to new lines as the screen shrinks */
+    margin-top: var(--small-margin);
 }
 
 #forecast-title {
-    margin-top: 20px;
+    margin-top: var(--big-margin);
 }
 
-.date-and-description {
+.forecast-date-and-description {
     display: block;
 }
 
 #forecast-one-day-out {
-    margin-right: 10px;
+    margin-right: var(--small-margin);
 }
 
 #forecast-two-days-out, #forecast-three-days-out, #forecast-four-days-out {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: var(--small-margin);
+    margin-right: var(--small-margin);
 }
 
 #forecast-five-days-out {
-    margin-left: 10px;
+    margin-left: var(--small-margin);
 }
 
 .forecast-entry {
     display: block;
-    flex-grow: 1;
-    margin-bottom: 10px;
-    padding: 10px;
-    color: ghostwhite;
-    background-color: deepskyblue;
+    flex-grow: 1; /* make forecast entries take up 100% of the width of all of the lines they use */
+    margin-bottom: var(--small-margin);
+    padding: var(--small-margin);
+    color: var(--text-color);
+    background-color: var(--hover-color);
 }
