@@ -218,7 +218,7 @@ let cityOptionsQuestion = document.getElementById("city-options-question");
 
 function appendSearchOptions(elem, object) {
     if (elem.hasChildNodes()) { // if there are already search options on the page
-    // source for the hasChildNodes() method: https://developer.mozilla.org/en-US/docs/Web/API/Node/hasChildNodes
+    // source for the hasChildNodes() method: https://www.w3schools.com/jsref/met_node_haschildnodes.asp
         elem.innerHTML = ''; // remove the search options from the page
     }
     if (object.length === 0) { // if there are no search results for the city that the user entered
