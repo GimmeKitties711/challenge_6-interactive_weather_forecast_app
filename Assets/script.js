@@ -100,12 +100,12 @@ let futureHumidities = [humidityOneDayOut, humidityTwoDaysOut, humidityThreeDays
 function populateCurrentWeather(object) {
     currentDate.textContent = dayjs().format('M/DD/YYYY');
     // source for how to get current date in dayjs: https://day.js.org/docs/en/parse/now
-    // source for how to format date in dayjs: https://day.js.org/docs/en/display/format
+    // source for how to format a date in dayjs: https://day.js.org/docs/en/display/format
     currentWeatherDescription.textContent = object.weather[0].description;
     let weatherIcon = object.weather[0].icon;
     let weatherIconURL = `https://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
     currentWeatherIcon.setAttribute('src', weatherIconURL);
-    // source for weather icons, their meaning, and how to use them: https://openweathermap.org/weather-conditions
+    // source for weather icons, their meanings, and how to use them: https://openweathermap.org/weather-conditions
     currentTemperature.textContent = convertTemperature(object.main.temp).toFixed(2); // toFixed(2) rounds a number to 2 decimal places
     // source for how to round a number to 2 decimal places: https://stackoverflow.com/questions/11832914/how-to-round-to-at-most-2-decimal-places-if-necessary
     currentWind.textContent = object.wind.speed.toFixed(2);
@@ -165,11 +165,43 @@ function showChoiceContainer() {
 
 let searchHistoryContainer = document.getElementById("search-history-container");
 
+// the following function has been commented out because I could only get it to work in the console, not in the actual code. I am not sure why this is the case.
+/*
+function removeDuplicateCities(elem) {
+    let textContents = [];
+    for (i=0; i<elem.children.length; i++) {
+        textContents.push(elem.children[i].textContent);
+        // go through the children of the element and add their textContent to the textContents array
+    }
+
+    for (i=0; i<textContents.length; i++) {
+        if (textContents.slice(0, i).includes(textContents[i])) {
+            elem.children[i].textContent = 'flagged for deletion';
+            // for every item in the textContents array, if the item is a duplicate of an item that came before it, change the textContent of the corresponding child to 'flagged for deletion'
+        }
+    }
+
+    textContents = [];
+    for (i=0; i<elem.children.length; i++) {
+        textContents.push(elem.children[i].textContent);
+        // update the textContents array to include the new textContent of the children because at least one of the children's textContent has been changed to 'flagged for deletion'
+    }
+
+    for (i=textContents.length-1; i>=0; i--) {
+        if (textContents[i] === 'flagged for deletion') {
+            elem.removeChild(elem.children[i]);
+            // remove the children that are marked as 'flagged for deletion'
+        }
+    }
+}
+*/
+
 searchBtn.addEventListener("click", function() {
     if (validateForm()) { // if the user enters a valid city name
         showChoiceContainer();
         fetchGeoCoordinatesWithoutProceeding(cityInput.value, 10);
         // show the choice container and populate it with city options based on the user's input
+        // removeDuplicateCities(cityOptionsContainer); // I would call removeDuplicateCities() here if it worked properly
     }
 });
 
