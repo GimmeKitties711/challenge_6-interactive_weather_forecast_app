@@ -5,12 +5,18 @@
 
 body, button, input {
     font-family: var(--font_family);
-    /*background-color: #f0f0f0;*/
+    /* use the same font for all of the text on the page */
 }
 
 input {
     border: 1px solid black;
     border-radius: 5px;
+}
+
+@media only screen and (max-width: 800px) {
+    #city-input {
+        width: 90px;
+    }
 }
 
 h1 {
@@ -19,8 +25,13 @@ h1 {
 }
 
 #search-container {
+    margin-right: 10px;
     width: 20%;
     float: left;
+}
+
+form {
+    margin-bottom: 15px;
 }
 
 #search-btn {
@@ -32,6 +43,8 @@ h1 {
 }
 
 #clear-history-btn {
+    display: none;
+    margin-top: 15px;
     border: 1px black solid;
     border-radius: 5px;
     color: ghostwhite;
@@ -44,12 +57,14 @@ h1 {
 
 #choice-container {
     display: none;
-    margin-left: 10px;
-    width: 80%;
-    float: right;
+    /*margin-left: 10px;*/
+    float: left;
+    width: 75%;
+    max-width: 900px;
 }
 
 #home-page-btn {
+    margin-top: 20px;
     border: 1px black solid;
     border-radius: 5px;
     background-color: lightgrey;
@@ -60,18 +75,21 @@ h1 {
 }
 
 #forecast-container {
-    margin-left: 10px;
-    width: 80%;
-    float: right;
+    /*margin-left: 10px;*/
+    float: left;
+    width: 75%;
+    max-width: 900px;
 }
 /* source for how to position two divs side-by-side: https://stackoverflow.com/questions/5387392/how-to-get-these-two-divs-side-by-side */
 
-/*
-#search-container, #forecast-container {
-    display: inline-block;
-    vertical-align: top;
+@media only screen and (max-width: 500px) {
+    #search-container, #forecast-container {
+        width: 100%; /* forces the search container and the forecast container to display vertically */
+    }
+    #city-input {
+        width: 130px;
+    }
 }
-*/
 
 #current-weather {
     margin-top: 20px;
@@ -85,6 +103,7 @@ h1 {
 
 #forecast-next-five-days {
     display: flex;
+    flex-wrap: wrap;
     margin-top: 10px;
 }
 
@@ -110,16 +129,10 @@ h1 {
 }
 
 .forecast-entry {
-    display: flex;
+    display: block;
     flex-grow: 1;
-    flex-wrap: wrap;
     margin-bottom: 10px;
-
+    padding: 10px;
     color: ghostwhite;
     background-color: deepskyblue;
-    
-    /*width: 15%;*/
-    /*width: calc((100% - (var(--forecast-entry-margin) * 20))/5);*/
-    /*width: 20%;*/
-    padding: 10px;
 }

@@ -184,7 +184,7 @@ function appendSearchOptions(elem, object) {
     for (i=0; i<object.length; i++) {
         let searchOption = document.createElement('button');
         searchOption.style.display = 'block';
-        searchOption.style.margin = '5px';
+        searchOption.style.margin = '5px 5px 5px 0';
         searchOption.style.backgroundColor = "lightgrey";
         searchOption.style.border = "1px black solid";
         searchOption.style.borderRadius = "5px";
@@ -232,6 +232,7 @@ function appendSearchHistoryEntries(elem) {
     for (i=0; i<storedCities.length; i++) {
         let searchHistoryEntry = document.createElement('button');
         searchHistoryEntry.style.display = 'block';
+        searchHistoryEntry.style.marginBottom = '5px';
         searchHistoryEntry.style.backgroundColor = "lightgrey";
         searchHistoryEntry.style.border = "1px black solid";
         searchHistoryEntry.style.borderRadius = "5px";
@@ -281,10 +282,16 @@ function saveNewCity(city, state, country, lat, lon) {
 
 document.addEventListener("DOMContentLoaded", function() {
     appendSearchHistoryEntries(searchHistoryContainer);
-    loadDefaultCity();
+    let storedCities = getStoredCities();
+    if (storedCities.length > 0) {
+        showClearHistoryButton();
+    } else {
+        hideClearHistoryButton();
+    }
+    loadMostRecentCity();
 });
 
-function loadDefaultCity() {
+function loadMostRecentCity() {
     let storedCities = getStoredCities();
     if (storedCities.length === 0) {
         cityStateCountry.textContent = 'Berkeley, CA, US';
