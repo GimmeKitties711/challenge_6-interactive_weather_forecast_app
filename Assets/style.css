@@ -76,7 +76,7 @@ form {
 }
 
 #home-page-btn:hover {
-    background-color: var(--bg-and-hover-color)
+    background-color: var(--bg-and-hover-color);
 }
 
 #forecast-container {
