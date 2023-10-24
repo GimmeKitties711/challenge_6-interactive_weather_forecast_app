@@ -31,7 +31,7 @@ Only letters, spaces, periods, and commas are allowed in the search query:
 
 **Important:** The search is not case sensitive, but it is likely to fail if you enter a name with typos or unnecessary/missing spaces.
 
-**Correct: Irvine**
+**Correct: Irvine**<br>
 **Incorrect:**
 
 **Ir vine:**
