@@ -8,88 +8,86 @@
 </head>
 <body>
     <h1>Weather Dashboard</h1>
-    <div id="contents-container">
-        <section id="search-container">
-            <h3>Search for a city:</h3>
-            <form name="submitCity" id="submit-city" method="post">
-                <input type="text" name="cityName" id="city-input" placeholder="City Name">
-                <input type="submit" id="search-btn" value="Search">
-            </form>
-            <section id="search-history-container"></section>
-            <button id="clear-history-btn" title="Delete Searched Cities">Clear Search History</button>
-        </section>
-        <section id="choice-container">
-            <button id="home-page-btn" title="Home Page">Go Back</button>
-            <p>Which city would you like to see?</p>
-            <div id="city-options-container"></div>
-        </section>
-        <section id="forecast-container">
-            <div id="current-weather">
-                <div>
-                    <div id="city-state-country"></div>
-                    <div id="current-date-container">(<span id="current-date"></span>)</div>
-                </div>
-                <div id="current-weather-description"></div>
+    <section id="search-container">
+        <h3>Search for a city:</h3>
+        <form name="submitCity" id="submit-city" method="post">
+            <input type="text" name="cityName" id="city-input" placeholder="City Name">
+            <input type="submit" id="search-btn" value="Search">
+        </form>
+        <section id="search-history-container"></section>
+        <button id="clear-history-btn" title="Delete Searched Cities">Clear Search History</button>
+    </section>
+    <section id="choice-container">
+        <button id="home-page-btn" title="Home Page">Go Back</button>
+        <p>Which city would you like to see?</p>
+        <div id="city-options-container"></div>
+    </section>
+    <section id="forecast-container">
+        <div id="current-weather">
+            <div>
+                <div id="city-state-country"></div>
+                <div id="current-date-container">(<span id="current-date"></span>)</div>
+            </div>
+            <div id="current-weather-description"></div>
                 <img id="current-weather-icon" alt="weather icon for current day" src="">
-                <div>Temp: <span id="current-temperature"></span> °F</div>
-                <div>Wind: <span id="current-wind"></span> MPH</div>
-                <div>Humidity: <span id="current-humidity"></span>%</div>
+            <div>Temp: <span id="current-temperature"></span> °F</div>
+            <div>Wind: <span id="current-wind"></span> MPH</div>
+            <div>Humidity: <span id="current-humidity"></span>%</div>
+        </div>
+        <div id="forecast-title">5-day forecast:</div>
+        <div id="forecast-next-five-days">
+            <div id="forecast-one-day-out" class="forecast-entry">
+                <div>
+                    <div id="date-one-day-out" class="date-and-description"></div>
+                    <div id="description-one-day-out" class="date-and-description"></div>
+                </div>
+                <img id="weather-icon-one-day-out" alt="weather icon for first forecast day" src="">
+                <div>Temp: <span id="temperature-one-day-out"></span> °F</div>
+                <div>Wind: <span id="wind-one-day-out"></span> MPH</div>
+                <div>Humidity: <span id="humidity-one-day-out"></span>%</div>
             </div>
-            <div id="forecast-title">5-day forecast:</div>
-            <div id="forecast-next-five-days">
-                <div id="forecast-one-day-out" class="forecast-entry">
-                    <div>
-                        <div id="date-one-day-out" class="date-and-description"></div>
-                        <div id="description-one-day-out" class="date-and-description"></div>
-                    </div>
-                    <img id="weather-icon-one-day-out" alt="weather icon for first forecast day" src="">
-                    <div>Temp: <span id="temperature-one-day-out"></span> °F</div>
-                    <div>Wind: <span id="wind-one-day-out"></span> MPH</div>
-                    <div>Humidity: <span id="humidity-one-day-out"></span>%</div>
+            <div id="forecast-two-days-out" class="forecast-entry">
+                <div>
+                    <div id="date-two-days-out" class="date-and-description"></div>
+                    <div id="description-two-days-out" class="date-and-description"></div>
                 </div>
-                <div id="forecast-two-days-out" class="forecast-entry">
-                    <div>
-                        <div id="date-two-days-out" class="date-and-description"></div>
-                        <div id="description-two-days-out" class="date-and-description"></div>
-                    </div>
-                    <img id="weather-icon-two-days-out" alt="weather icon for second forecast day" src="">
-                    <div>Temp: <span id="temperature-two-days-out"></span> °F</div>
-                    <div>Wind: <span id="wind-two-days-out"></span> MPH</div>
-                    <div>Humidity: <span id="humidity-two-days-out"></span>%</div>
-                </div>
-                <div id="forecast-three-days-out" class="forecast-entry">
-                    <div>
-                        <div id="date-three-days-out" class="date-and-description"></div>
-                        <div id="description-three-days-out" class="date-and-description"></div>
-                    </div>
-                    <img id="weather-icon-three-days-out" alt="weather icon for third forecast day" src="">
-                    <div>Temp: <span id="temperature-three-days-out"></span> °F</div>
-                    <div>Wind: <span id="wind-three-days-out"></span> MPH</div>
-                    <div>Humidity: <span id="humidity-three-days-out"></span>%</div>
-                </div>
-                <div id="forecast-four-days-out" class="forecast-entry">
-                    <div>
-                        <div id="date-four-days-out" class="date-and-description"></div>
-                        <div id="description-four-days-out" class="date-and-description"></div>
-                    </div>
-                    <img id="weather-icon-four-days-out" alt="weather icon for fourth forecast day" src="">
-                    <div>Temp: <span id="temperature-four-days-out"></span> °F</div>
-                    <div>Wind: <span id="wind-four-days-out"></span> MPH</div>
-                    <div>Humidity: <span id="humidity-four-days-out"></span>%</div>
-                </div>
-                <div id="forecast-five-days-out" class="forecast-entry">
-                    <div>
-                        <div id="date-five-days-out" class="date-and-description"></div>
-                        <div id="description-five-days-out" class="date-and-description"></div>
-                    </div>
-                    <img id="weather-icon-five-days-out" alt="weather icon for fifth forecast day" src="">
-                    <div>Temp: <span id="temperature-five-days-out"></span> °F</div>
-                    <div>Wind: <span id="wind-five-days-out"></span> MPH</div>
-                    <div>Humidity: <span id="humidity-five-days-out"></span>%</div>
-                </div>
+                <img id="weather-icon-two-days-out" alt="weather icon for second forecast day" src="">
+                <div>Temp: <span id="temperature-two-days-out"></span> °F</div>
+                <div>Wind: <span id="wind-two-days-out"></span> MPH</div>
+                <div>Humidity: <span id="humidity-two-days-out"></span>%</div>
             </div>
-        </section>
-    </div>
+            <div id="forecast-three-days-out" class="forecast-entry">
+                <div>
+                    <div id="date-three-days-out" class="date-and-description"></div>
+                    <div id="description-three-days-out" class="date-and-description"></div>
+                </div>
+                <img id="weather-icon-three-days-out" alt="weather icon for third forecast day" src="">
+                <div>Temp: <span id="temperature-three-days-out"></span> °F</div>
+                <div>Wind: <span id="wind-three-days-out"></span> MPH</div>
+                <div>Humidity: <span id="humidity-three-days-out"></span>%</div>
+            </div>
+            <div id="forecast-four-days-out" class="forecast-entry">
+                <div>
+                    <div id="date-four-days-out" class="date-and-description"></div>
+                    <div id="description-four-days-out" class="date-and-description"></div>
+                </div>
+                <img id="weather-icon-four-days-out" alt="weather icon for fourth forecast day" src="">
+                <div>Temp: <span id="temperature-four-days-out"></span> °F</div>
+                <div>Wind: <span id="wind-four-days-out"></span> MPH</div>
+                <div>Humidity: <span id="humidity-four-days-out"></span>%</div>
+            </div>
+            <div id="forecast-five-days-out" class="forecast-entry">
+                <div>
+                    <div id="date-five-days-out" class="date-and-description"></div>
+                    <div id="description-five-days-out" class="date-and-description"></div>
+                </div>
+                <img id="weather-icon-five-days-out" alt="weather icon for fifth forecast day" src="">
+                <div>Temp: <span id="temperature-five-days-out"></span> °F</div>
+                <div>Wind: <span id="wind-five-days-out"></span> MPH</div>
+                <div>Humidity: <span id="humidity-five-days-out"></span>%</div>
+            </div>
+        </div>
+    </section>
     <script src="Assets/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script> <!-- import dayjs -->
 </body>

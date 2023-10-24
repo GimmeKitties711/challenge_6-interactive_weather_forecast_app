@@ -83,7 +83,7 @@ form {
 /* source for how to position two divs side-by-side: https://stackoverflow.com/questions/5387392/how-to-get-these-two-divs-side-by-side */
 
 @media only screen and (max-width: 500px) {
-    #search-container, #forecast-container {
+    #search-container, #choice-container, #forecast-container {
         width: 100%; /* forces the search container and the forecast container to display vertically */
     }
     #city-input {
